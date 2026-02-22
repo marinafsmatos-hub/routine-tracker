@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1220" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" />
+  <title>Derm Routine Tracker</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111827; --muted:#9ca3af; --text:#e5e7eb;
+      --accent:#60a5fa; --ok:#34d399; --warn:#fbbf24; --danger:#fb7185;
+      --border:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;}
+    body{margin:0; background:linear-gradient(180deg,#050812, #0b1220 40%, #050812); color:var(--text);}
+    header{
+      position:sticky; top:0; z-index:5;
+      padding:14px 16px 10px; background:rgba(5,8,18,.88);
+      backdrop-filter: blur(8px); border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    h1{margin:0; font-size:16px;}
+    .sub{margin-top:6px; color:var(--muted); font-size:12.5px; line-height:1.35;}
+    main{max-width:980px; margin:0 auto; padding:14px 16px 90px;}
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+    .tab{
+      padding:8px 10px; border-radius:999px; border:1px solid var(--border);
+      background:rgba(255,255,255,.06); color:var(--text); cursor:pointer; font-weight:650;
+      font-size:12.5px;
+    }
+    .tab.active{border-color:rgba(96,165,250,.45); background:rgba(96,165,250,.18);}
+    .row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .pill{
+      padding:6px 10px; border-radius:999px; border:1px solid var(--border);
+      background:rgba(255,255,255,.05); color:var(--muted); font-size:12px;
+    }
+    .pill strong{color:var(--text);}
+    .grid{display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px;}
+    @media (min-width:820px){ .grid{grid-template-columns:1fr 1fr;} }
+    .card{
+      background:rgba(17,24,39,.92); border:1px solid var(--border);
+      border-radius:14px; padding:14px;
+    }
+    .card h2{margin:0 0 10px; font-size:14px;}
+    .card h3{margin:12px 0 8px; font-size:13px; color:var(--text);}
+    .item{display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-top:1px solid rgba(255,255,255,.06);}
+    .item:first-of-type{border-top:none;}
+    input[type="checkbox"]{width:18px; height:18px; margin-top:2px; accent-color: var(--accent);}
+    .label{flex:1;}
+    .label .t{font-size:13.5px; font-weight:700;}
+    .label .d{font-size:12px; color:var(--muted); margin-top:3px; line-height:1.3;}
+    .right{display:flex; gap:8px; align-items:center;}
+    .tag{
+      font-size:11px; padding:4px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.10); color:var(--muted);
+      background:rgba(255,255,255,.04);
+      white-space:nowrap;
+    }
+    .tag.good{border-color:rgba(52,211,153,.25); color:#bff7df; background:rgba(52,211,153,.10);}
+    .tag.warn{border-color:rgba(251,191,36,.25); color:#ffe7a3; background:rgba(251,191,36,.10);}
+    .tag.danger{border-color:rgba(251,113,133,.25); color:#ffd1da; background:rgba(251,113,133,.10);}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+    button{
+      border:none; border-radius:10px; padding:10px 12px; cursor:pointer; font-weight:750;
+      background:rgba(255,255,255,.08); color:var(--text); border:1px solid var(--border);
+      font-size:12.5px;
+    }
+    button.primary{background:rgba(96,165,250,.18); border-color:rgba(96,165,250,.35);}
+    button.good{background:rgba(52,211,153,.12); border-color:rgba(52,211,153,.25);}
+    button.warn{background:rgba(251,191,36,.12); border-color:rgba(251,191,36,.25);}
+    button.danger{background:rgba(251,113,133,.12); border-color:rgba(251,113,133,.25);}
+    textarea, input[type="date"], select{
+      width:100%; padding:10px 11px; border-radius:12px; border:1px solid var(--border);
+      background:rgba(255,255,255,.04); color:var(--text);
+      outline:none;
+    }
+    textarea{min-height:110px; resize:vertical;}
+    .muted{color:var(--muted); font-size:12px; line-height:1.35;}
+    .small{font-size:11.5px; color:var(--muted);}
+    .split{display:grid; grid-template-columns:1fr; gap:10px;}
+    @media (min-width:820px){ .split{grid-template-columns:1fr 1fr;} }
+
+    .list{display:flex; flex-direction:column; gap:10px; margin-top:8px;}
+    .alt{
+      border:1px solid var(--border); border-radius:12px; padding:10px;
+      background:rgba(255,255,255,.03);
+    }
+    .alt .top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px;}
+    .alt .name{font-weight:800; font-size:13px;}
+    .alt .meta{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;}
+    .alt .desc{margin-top:6px; color:var(--muted); font-size:12px; line-height:1.35;}
+    .alt button{padding:7px 9px; font-weight:800;}
+    .footerNote{margin-top:10px; color:var(--muted); font-size:11.5px; line-height:1.35;}
+    .hr{height:1px;background:rgba(255,255,255,.06); margin:12px 0;}
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Derm Routine Tracker</h1>
+    <div class="sub">
+      Built for: stable melasma (cheeks/upper lip/forehead), hormonal breakouts, tretinoin ramp-up, HQ taper.
+      Data stays on this device (localStorage).
+    </div>
+    <div class="tabs" id="tabs"></div>
+  </header>
+
+  <main>
+    <div class="row" id="statusRow"></div>
+
+    <section id="view-today" class="view">
+      <div class="grid">
+        <div class="card" id="amCard"></div>
+        <div class="card" id="pmCard"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <h2>Notes</h2>
+        <div class="muted">Track irritation, flaking, melasma changes, pimples, travel/sun exposure, period timing, etc.</div>
+        <textarea id="notes" placeholder="Example: slight flaking around nose; no melasma darkening; 1 hormonal pimple on chin."></textarea>
+        <div class="actions">
+          <button class="primary" id="saveNotes">Save notes</button>
+          <button id="clearNotes">Clear notes</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-plan" class="view" style="display:none;">
+      <div class="card">
+        <h2>Plan settings</h2>
+        <div class="split">
+          <div>
+            <div class="small">Rotation start date (Night 1 = Tretinoin)</div>
+            <input type="date" id="startDate" />
+          </div>
+          <div>
+            <div class="small">HQ taper phase</div>
+            <select id="hqPhase">
+              <option value="phase1">Phase 1 (Month 1): HQ 3 mornings/week</option>
+              <option value="phase2">Phase 2 (Month 2): HQ 2 mornings/week</option>
+              <option value="phase3">Phase 3 (Month 3+): HQ OFF (maintenance)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="hr"></div>
+        <div class="muted">
+          <strong>Night rotation (4-night cycle):</strong>
+          Night 1 = Tretinoin • Night 2 = Recovery • Night 3 = Azelaic • Night 4 = Recovery.
+          After 8–12 weeks, target every other night tretinoin if fully stable (no prolonged irritation / no melasma darkening).
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="saveSettings">Save settings</button>
+          <button id="resetAll" class="danger">Reset app data</button>
+        </div>
+
+        <div class="footerNote">
+          Reminder: azelaic acid topical products are prescription-only in the US (cream/foam/gel).  [oai_citation:6‡Mayo Clinic](https://www.mayoclinic.org/drugs-supplements/azelaic-acid-topical-route/description/drg-20062084?utm_source=chatgpt.com)
+        </div>
+      </div>
+    </section>
+
+    <section id="view-products" class="view" style="display:none;">
+      <div class="card" id="productCabinet"></div>
+    </section>
+
+    <section id="view-alternatives" class="view" style="display:none;">
+      <div class="card" id="alternatives"></div>
+    </section>
+  </main>
+
+  <script>
+    // ---------- Data model ----------
+    const DEFAULT = {
+      user: { name: "Marina", timezone: "America/New_York" },
+      settings: {
+        rotationStart: new Date().toISOString().slice(0,10), // today by default
+        hqPhase: "phase1"
+      },
+      activeProducts: {
+        cleanser: "SkinMedica Facial Cleanser",
+        vitaminC_HQ: "Obagi Vitamin C + 4% Hydroquinone (AM, tapered)",
+        azelaic: "Prescription Azelaic Acid 15% (Finacea or generic)",
+        moisturizerLight: "Seacra Marine Algae Gel",
+        moisturizerBarrier: "SkinMedica Dermal Repair Cream (PM / retinoid nights)",
+        sunscreen: "Eucerin SPF 50",
+        tretinoin: "Tretinoin 0.025% cream (Rx)"
+      },
+      // Checklist logs by date: { "YYYY-MM-DD": { am:{id:true}, pm:{id:true}, notes:"..." } }
+      logs: {}
+    };
+
+    const PRODUCT_LIBRARY = {
+      cleanser: {
+        primary: {
+          name: "SkinMedica Facial Cleanser",
+          tier: "$$",
+          value: "High",
+          note: "Gentle foaming cleanser; panthenol (B5) to support hydration; good with actives."
+        },
+        alts: [
+          { name:"Obagi Nu-Derm Gentle Cleanser", tier:"$$", value:"High", note:"Great compatibility if you’re already in Obagi ecosystem; gentle, non-stripping." },
+          { name:"La Roche-Posay Toleriane Hydrating Gentle Cleanser", tier:"$", value:"Very High", note:"Excellent cost/benefit; barrier-friendly. Not ‘medical-grade’ branding, but derm favorite." },
+          { name:"CeraVe Hydrating Cleanser", tier:"$", value:"High", note:"Strong value option; very gentle; good if you get dry with tret." }
+        ],
+        sources: [
+          { label:"SkinMedica cleanser benefits", cite:"turn0search0" },
+          { label:"Retail description (gentle, B5)", cite:"turn0search8" }
+        ]
+      },
+      azelaic: {
+        primary: {
+          name: "Prescription Azelaic Acid 15% (Finacea or generic)",
+          tier: "$$",
+          value: "Very High",
+          note: "Long-term melasma + hormonal acne support; anti-inflammatory; maintenance backbone."
+        },
+        alts: [
+          { name:"Prescription Azelaic Acid 20% cream (generic)", tier:"$$", value:"Very High", note:"Often used for acne; stronger than OTC; discuss with dermatologist." },
+          { name:"The Ordinary Azelaic Acid 10% Suspension (OTC)", tier:"$", value:"High", note:"Budget-friendly; good if Rx is hard to access, but usually less potent than 15–20%." },
+          { name:"Paula’s Choice 10% Azelaic Acid Booster (OTC)", tier:"$$", value:"High", note:"More elegant feel; still OTC strength." }
+        ],
+        sources: [
+          { label:"Mayo Clinic: azelaic is Rx in US", cite:"turn0search7" },
+          { label:"FDA label: Finacea Gel 15%", cite:"turn0search15" }
+        ]
+      },
+      tretinoin: {
+        primary: {
+          name: "Tretinoin 0.025% cream (Rx)",
+          tier: "$$",
+          value: "Very High",
+          note: "Gold-standard for collagen, texture, acne control. Cream is generally gentler than gel for melasma-prone skin."
+        },
+        alts: [
+          { name:"Tretinoin 0.05% cream (Rx)", tier:"$$", value:"High", note:"Step-up option after ~3+ months stable on 0.025%. Not a starter for melasma-prone skin." },
+          { name:"Adapalene 0.1% gel (OTC)", tier:"$", value:"High", note:"Gentler retinoid alternative if tret causes irritation; less data for melasma vs tret." },
+          { name:"Medical-grade retinol (SkinMedica/Obagi 0.25–0.5)", tier:"$$", value:"Medium–High", note:"Good if you can’t access Rx; slower results than tret." }
+        ],
+        sources: []
+      },
+      moisturizerBarrier: {
+        primary: {
+          name: "SkinMedica Dermal Repair Cream",
+          tier: "$$$",
+          value: "High",
+          note: "Ultra-rich barrier support; especially helpful on tret nights or winter months."
+        },
+        alts: [
+          { name:"Obagi Hydrate Luxe (PM)", tier:"$$$", value:"High", note:"Ultra-rich; non-comedogenic; excellent for night if you prefer Obagi." },
+          { name:"La Roche-Posay Cicaplast Balm B5+ (drugstore)", tier:"$", value:"Very High", note:"Great cost/benefit for irritation/flaking; use as a targeted buffer on sensitive zones." },
+          { name:"SkinCeuticals Triple Lipid Restore 2:4:2", tier:"$$$", value:"Medium–High", note:"Excellent barrier lipids; pricey. Consider if you want a ‘one-and-done’ premium barrier cream." }
+        ],
+        sources: [
+          { label:"SkinMedica dermal repair is ultra rich + MSRP", cite:"turn0search1" },
+          { label:"Obagi Hydrate Luxe description", cite:"turn0search2" },
+          { label:"Allure moisturizer ideas incl Dermal Repair + Cicaplast", cite:"turn0search9" }
+        ]
+      },
+      moisturizerLight: {
+        primary: {
+          name: "Seacra Marine Algae Gel",
+          tier: "$$",
+          value: "Medium",
+          note: "Great as a light hydration layer, but often not enough alone once tret frequency increases."
+        },
+        alts: [
+          { name:"Keep Seacra AM + add barrier cream PM", tier:"$", value:"Very High", note:"Best cost/benefit approach: keep gel for mornings, add a stronger PM moisturizer only when needed." },
+          { name:"CeraVe PM Facial Moisturizing Lotion", tier:"$", value:"High", note:"Light but barrier-supporting; good if you want one affordable all-rounder." },
+          { name:"Vanicream Daily Facial Moisturizer", tier:"$", value:"High", note:"Simple, low-irritant, good for retinoid users." }
+        ],
+        sources: []
+      },
+      sunscreen: {
+        primary: { name:"Eucerin SPF 50", tier:"$", value:"High", note:"Critical for melasma stability. Use 2 finger lengths; reapply when outdoors." },
+        alts: [
+          { name:"EltaMD UV Clear SPF 46", tier:"$$", value:"High", note:"Popular for acne-prone + pigmentation-prone skin; lightweight." },
+          { name:"La Roche-Posay Anthelios (SPF 50+)", tier:"$$", value:"High", note:"Very strong UV protection; multiple textures." },
+          { name:"Tinted mineral SPF 50", tier:"$$", value:"High", note:"Tint can help visible-light protection (often helpful for melasma)." }
+        ],
+        sources: []
+      }
+    };
+
+    // ---------- Helpers ----------
+    const $ = (id)=>document.getElementById(id);
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem("dermRoutineState");
+        return raw ? JSON.parse(raw) : structuredClone(DEFAULT);
+      } catch(e){
+        return structuredClone(DEFAULT);
+      }
+    }
+
+    function saveState(){
+      localStorage.setItem("dermRoutineState", JSON.stringify(state));
+    }
+
+    function todayISO(){
+      const d = new Date();
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // We'll use local device date; user requested America/New_York but device likely matches.
+      return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0,10);
+    }
+
+    function daysBetween(aISO, bISO){
+      const a = new Date(aISO+"T00:00:00");
+      const b = new Date(bISO+"T00:00:00");
+      return Math.floor((b - a) / (1000*60*60*24));
+    }
+
+    function nightTypeFor(dateISO){
+      const start = state.settings.rotationStart;
+      const delta = daysBetween(start, dateISO);
+      const mod = ((delta % 4) + 4) % 4;
+      // 0=Tret,1=Recovery,2=Azelaic,3=Recovery
+      if(mod===0) return "Tretinoin Night";
+      if(mod===2) return "Azelaic Night";
+      return "Recovery Night";
+    }
+
+    function hqGuidance(){
+      const phase = state.settings.hqPhase;
+      if(phase==="phase1") return "HQ 3 mornings/week (Month 1 taper).";
+      if(phase==="phase2") return "HQ 2 mornings/week (Month 2 taper).";
+      return "HQ OFF (maintenance).";
+    }
+
+    function getLog(dateISO){
+      state.logs[dateISO] ||= { am:{}, pm:{}, notes:"" };
+      return state.logs[dateISO];
+    }
+
+    function setCheck(dateISO, slot, id, val){
+      const log = getLog(dateISO);
+      log[slot][id] = val;
+      saveState();
+      render();
+    }
+
+    function costTag(tier){
+      return tier || "$";
+    }
+
+    // ---------- Routine templates ----------
+    function amChecklist(dateISO){
+      const phase = state.settings.hqPhase;
+      const items = [
+        { id:"am_cleanse", title:"Cleanse", desc:`${state.activeProducts.cleanser}` },
+        { id:"am_vitc", title:"Vitamin C", desc:`${state.activeProducts.vitaminC_HQ} (use Vitamin C component daily)` },
+      ];
+
+      if(phase !== "phase3"){
+        items.push({ id:"am_hq", title:"Hydroquinone (tapered)", desc:`4% HQ: follow taper schedule. ${hqGuidance()}` });
+        items.push({ id:"am_azelaic", title:"Azelaic (non-HQ mornings)", desc:`${state.activeProducts.azelaic} — use on mornings you do NOT apply HQ.` });
+      } else {
+        items.push({ id:"am_azelaic", title:"Azelaic (maintenance)", desc:`${state.activeProducts.azelaic} — daily or as tolerated.` });
+      }
+
+      items.push(
+        { id:"am_hydrate", title:"Hydration layer", desc:`${state.activeProducts.moisturizerLight}` },
+        { id:"am_spf", title:"Sunscreen", desc:`${state.activeProducts.sunscreen} — apply generously (2 finger lengths).` }
+      );
+      return items;
+    }
+
+    function pmChecklist(dateISO){
+      const nt = nightTypeFor(dateISO);
+      const items = [
+        { id:"pm_cleanse", title:"Cleanse", desc:`${state.activeProducts.cleanser}` },
+      ];
+
+      if(nt==="Tretinoin Night"){
+        items.push(
+          { id:"pm_wait", title:"Wait 20 minutes", desc:"Let skin fully dry to reduce irritation." },
+          { id:"pm_tret", title:"Tretinoin (pea-size)", desc:`${state.activeProducts.tretinoin} — avoid corners of nose/mouth/eyes. Buffer if needed.` },
+          { id:"pm_barrier", title:"Barrier moisturizer", desc:`${state.activeProducts.moisturizerBarrier} (or layer over ${state.activeProducts.moisturizerLight})` }
+        );
+      } else if(nt==="Azelaic Night"){
+        items.push(
+          { id:"pm_azelaic", title:"Azelaic Acid", desc:`${state.activeProducts.azelaic} — thin layer.` },
+          { id:"pm_hydrate", title:"Moisturize", desc:`${state.activeProducts.moisturizerBarrier} (or ${state.activeProducts.moisturizerLight} if you’re not dry)` }
+        );
+      } else {
+        items.push(
+          { id:"pm_recovery", title:"Recovery night", desc:`Moisturize only. Use ${state.activeProducts.moisturizerBarrier} if dry/flaky; otherwise ${state.activeProducts.moisturizerLight} is ok.` }
+        );
+      }
+
+      return { nightType: nt, items };
+    }
+
+    // ---------- Rendering ----------
+    const TABS = [
+      { id:"today", label:"Today" },
+      { id:"plan", label:"Plan" },
+      { id:"products", label:"Products" },
+      { id:"alternatives", label:"Replacements" }
+    ];
+
+    function renderTabs(active){
+      const el = $("tabs");
+      el.innerHTML = "";
+      TABS.forEach(t=>{
+        const b = document.createElement("button");
+        b.className = "tab" + (active===t.id ? " active" : "");
+        b.textContent = t.label;
+        b.onclick = ()=>showView(t.id);
+        el.appendChild(b);
+      });
+    }
+
+    function showView(id){
+      ["today","plan","products","alternatives"].forEach(v=>{
+        const section = document.querySelector("#view-"+v);
+        section.style.display = (v===id) ? "" : "none";
+      });
+      renderTabs(id);
+    }
+
+    function renderStatus(dateISO){
+      const night = nightTypeFor(dateISO);
+      const row = $("statusRow");
+      row.innerHTML = "";
+      const pills = [
+        { text:`Date: `, strong: dateISO },
+        { text:`Tonight: `, strong: night },
+        { text:`HQ: `, strong: hqGuidance() }
+      ];
+      pills.forEach(p=>{
+        const div = document.createElement("div");
+        div.className="pill";
+        div.innerHTML = `${p.text}<strong>${p.strong}</strong>`;
+        row.appendChild(div);
+      });
+    }
+
+    function renderChecklist(container, title, items, slot, dateISO){
+      const log = getLog(dateISO);
+      const checked = log[slot] || {};
+      container.innerHTML = `<h2>${title}</h2>`;
+      items.forEach(it=>{
+        const wrap = document.createElement("div");
+        wrap.className="item";
+        const cb = document.createElement("input");
+        cb.type="checkbox";
+        cb.checked = !!checked[it.id];
+        cb.onchange = ()=>setCheck(dateISO, slot, it.id, cb.checked);
+
+        const lab = document.createElement("div");
+        lab.className="label";
+        lab.innerHTML = `<div class="t">${it.title}</div><div class="d">${it.desc}</div>`;
+
+        wrap.appendChild(cb);
+        wrap.appendChild(lab);
+        container.appendChild(wrap);
+      });
+    }
+
+    function renderToday(dateISO){
+      renderStatus(dateISO);
+
+      // AM
+      const am = amChecklist(dateISO);
+      renderChecklist($("amCard"), "Morning (AM)", am, "am", dateISO);
+
+      // PM
+      const pm = pmChecklist(dateISO);
+      const pmTitle = `Night (PM) • ${pm.nightType}`;
+      renderChecklist($("pmCard"), pmTitle, pm.items, "pm", dateISO);
+
+      // Notes
+      $("notes").value = getLog(dateISO).notes || "";
+    }
+
+    function renderPlan(){
+      $("startDate").value = state.settings.rotationStart;
+      $("hqPhase").value = state.settings.hqPhase;
+    }
+
+    function renderProducts(){
+      const c = $("productCabinet");
+      const ap = state.activeProducts;
+
+      c.innerHTML = `
+        <h2>Product cabinet (active picks)</h2>
+        <div class="muted">Tap “Swap” in Replacements to change any active product.</div>
+        <div class="hr"></div>
+        <div class="list">
+          ${Object.entries(ap).map(([k,v])=>`
+            <div class="alt">
+              <div class="top">
+                <div>
+                  <div class="name">${prettyKey(k)}</div>
+                  <div class="desc">${escapeHtml(v)}</div>
+                </div>
+                <div class="meta">
+                  <span class="tag">${categoryTier(k)}</span>
+                </div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="footerNote">
+          Note: Marine Algae gel is fine as a hydration layer, but many people need a richer barrier cream once tretinoin frequency increases.
+        </div>
+      `;
+    }
+
+    function renderAlternatives(){
+      const c = $("alternatives");
+      c.innerHTML = `
+        <h2>Replacements (cost/benefit)</h2>
+        <div class="muted">
+          Each category lists a primary pick plus 2–3 alternatives. “Value” is a practical cost/benefit score (not medical advice).
+          Prices vary by retailer and promotions; Rx coverage varies by insurance.
+        </div>
+        <div class="hr"></div>
+      `;
+
+      Object.keys(PRODUCT_LIBRARY).forEach(cat=>{
+        const block = document.createElement("div");
+        block.innerHTML = `
+          <h3>${prettyKey(cat)}</h3>
+          <div class="list">
+            ${renderAltCard(cat, PRODUCT_LIBRARY[cat].primary, true)}
+            ${PRODUCT_LIBRARY[cat].alts.map(a=>renderAltCard(cat, a, false)).join("")}
+          </div>
+          ${renderSources(PRODUCT_LIBRARY[cat].sources || [])}
+          <div class="hr"></div>
+        `;
+        c.appendChild(block);
+      });
+    }
+
+    function renderAltCard(cat, obj, isPrimary){
+      const tier = costTag(obj.tier);
+      const value = obj.value || "—";
+      const valClass = value.includes("Very High") ? "good" : (value.includes("High") ? "good" : "warn");
+      const primaryTag = isPrimary ? `<span class="tag good">Primary</span>` : `<span class="tag">Alt</span>`;
+      const activeNow = (isActive(cat, obj.name)) ? `<span class="tag good">Active</span>` : "";
+      const btn = (isActive(cat, obj.name))
+        ? `<button disabled style="opacity:.6;cursor:not-allowed;">Active</button>`
+        : `<button class="primary" onclick="swapProduct('${cat}', '${escapeJs(obj.name)}')">Swap</button>`;
+
+      return `
+        <div class="alt">
+          <div class="top">
+            <div>
+              <div class="name">${escapeHtml(obj.name)}</div>
+              <div class="desc">${escapeHtml(obj.note || "")}</div>
+            </div>
+            <div class="meta">
+              ${primaryTag}
+              ${activeNow}
+              <span class="tag">${tier}</span>
+              <span class="tag ${valClass}">Value: ${escapeHtml(value)}</span>
+              ${btn}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSources(sources){
+      if(!sources.length) return "";
+      const rows = sources.map(s=>`• ${s.label} (${s.cite})`).join("<br/>");
+      // We'll show readable citations in UI; in chat we already cited. This is purely for your reference in-app.
+      return `<div class="footerNote">Sources (reference IDs):<br/>${rows}</div>`;
+    }
+
+    function isActive(cat, name){
+      const ap = state.activeProducts;
+      const map = {
+        cleanser:"cleanser",
+        azelaic:"azelaic",
+        tretinoin:"tretinoin",
+        moisturizerBarrier:"moisturizerBarrier",
+        moisturizerLight:"moisturizerLight",
+        sunscreen:"sunscreen"
+      };
+      const key = map[cat];
+      return key ? ap[key] === name : false;
+    }
+
+    function swapProduct(cat, name){
+      const ap = state.activeProducts;
+      const map = {
+        cleanser:"cleanser",
+        azelaic:"azelaic",
+        tretinoin:"tretinoin",
+        moisturizerBarrier:"moisturizerBarrier",
+        moisturizerLight:"moisturizerLight",
+        sunscreen:"sunscreen"
+      };
+      const key = map[cat];
+      if(!key) return;
+      ap[key] = name;
+      saveState();
+      render();
+      showView("products");
+    }
+
+    function prettyKey(k){
+      return k
+        .replace(/_/g," ")
+        .replace(/([A-Z])/g," $1")
+        .replace(/\s+/g," ")
+        .trim()
+        .replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function categoryTier(key){
+      // Simple visual hint only
+      const premium = ["moisturizerBarrier"];
+      const mid = ["cleanser","azelaic","tretinoin","sunscreen","vitaminC_HQ","moisturizerLight"];
+      if(premium.includes(key)) return "$$$";
+      if(mid.includes(key)) return "$$ / $";
+      return "$";
+    }
+
+    function escapeHtml(str){
+      return (str||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+    function escapeJs(str){
+      return (str||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+    }
+
+    // ---------- Events ----------
+    function wireEvents(dateISO){
+      $("saveNotes").onclick = ()=>{
+        const log = getLog(dateISO);
+        log.notes = $("notes").value || "";
+        saveState();
+        render();
+      };
+      $("clearNotes").onclick = ()=>{
+        const log = getLog(dateISO);
+        log.notes = "";
+        saveState();
+        render();
+      };
+      $("saveSettings").onclick = ()=>{
+        state.settings.rotationStart = $("startDate").value || todayISO();
+        state.settings.hqPhase = $("hqPhase").value || "phase1";
+        saveState();
+        render();
+        showView("today");
+      };
+      $("resetAll").onclick = ()=>{
+        if(confirm("Reset all saved routine data on this device?")){
+          localStorage.removeItem("dermRoutineState");
+          state = structuredClone(DEFAULT);
+          saveState();
+          render();
+          showView("today");
+        }
+      };
+    }
+
+    // ---------- Main ----------
+    let state = loadState();
+
+    function render(){
+      const dateISO = todayISO();
+
+      // Tabs default
+      const visible = document.querySelector(".tab.active")?.textContent;
+      // Render each view
+      renderToday(dateISO);
+      renderPlan();
+      renderProducts();
+      renderAlternatives();
+      wireEvents(dateISO);
+    }
+
+    // Register service worker for offline use
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+    }
+
+    // Initialize
+    renderTabs("today");
+    showView("today");
+    render();
+  </script>
+
+  <script>
+    // Expose swapProduct globally for onclick
+    window.swapProduct = swapProduct;
+  </script>
+</body>
+</html>
