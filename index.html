@@ -650,6 +650,27 @@
 </main>
 
 <script>
+  window.addEventListener("error", function(e) {
+  document.body.insertAdjacentHTML(
+    "afterbegin",
+    `<div style="
+      position:fixed;
+      top:10px;
+      left:10px;
+      right:10px;
+      z-index:9999;
+      background:#fff3f3;
+      border:1px solid #ffb3b3;
+      color:#7a0b0b;
+      padding:12px;
+      border-radius:14px;
+      font:14px -apple-system,system-ui;
+      box-shadow:0 10px 30px rgba(0,0,0,.12)">
+      <b>JS Error:</b> ${e.message}
+    </div>`
+  );
+});
+
   function deepClone(obj){
   return JSON.parse(JSON.stringify(obj));
 }
