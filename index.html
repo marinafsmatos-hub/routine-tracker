@@ -3,453 +3,649 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b1220" />
+  <meta name="theme-color" content="#ffffff" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icon.svg" />
-  <title>Derm Routine Tracker</title>
+  <title>Routine ✨</title>
 
   <style>
     :root{
-      /* Pastel palette */
-      --bg: #0b1220;
+      /* Pastel wellness palette */
+      --ink:#1b2430;
+      --muted: rgba(27,36,48,.65);
+      --card: rgba(255,255,255,.72);
+      --card2: rgba(255,255,255,.55);
+      --border: rgba(27,36,48,.10);
+      --shadow: 0 14px 40px rgba(15, 23, 42, .12);
+      --shadow2: 0 10px 25px rgba(15, 23, 42, .10);
+      --r: 20px;
 
-      --day-bg: #FFF6D6;          /* pastel yellow */
-      --day-card: rgba(255,255,255,.70);
-      --day-text: #1a2230;
-      --day-muted: rgba(26,34,48,.65);
-      --day-border: rgba(26,34,48,.12);
+      /* Morning gradient */
+      --am1:#FFE7D1;  /* peach */
+      --am2:#FFF2B8;  /* buttery yellow */
+      --am3:#FFF9E7;  /* cream */
 
-      --night-bg: #0F1B2E;        /* muted navy */
-      --night-card: rgba(255,255,255,.06);
-      --night-text: #E8EEF8;
-      --night-muted: rgba(232,238,248,.70);
-      --night-border: rgba(255,255,255,.10);
+      /* Night gradient */
+      --pm1:#DCD7FF;  /* lavender */
+      --pm2:#B9D6FF;  /* periwinkle */
+      --pm3:#243A63;  /* muted navy */
 
-      --accent: #7AA7FF;          /* soft pastel blue */
-      --accent2: #73E6C4;         /* soft mint */
-      --warn: #FFD38A;            /* soft peach */
-      --danger: #FF9FB0;          /* soft pink */
+      /* Accents */
+      --mint:#B9F3E4;
+      --sky:#C6D8FF;
+      --coral:#FFB3C6;
+      --sun:#FFD38A;
+      --violet:#B8A8FF;
 
-      --radius: 16px;
-      --shadow: 0 10px 30px rgba(0,0,0,.20);
+      --btn:#1b2430;
+      --btnText:#ffffff;
+      --good:#2bb673;
+      --warn:#f5a623;
 
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, system-ui;
     }
 
     *{ box-sizing:border-box; font-family: var(--font); }
-    body{ margin:0; background: linear-gradient(180deg,#050812, #0b1220 40%, #050812); color:#e5e7eb; }
-
-    header{
-      position:sticky; top:0; z-index:5;
-      padding:14px 16px 12px;
-      background: rgba(5,8,18,.90);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,.08);
+    body{
+      margin:0;
+      color:var(--ink);
+      background: linear-gradient(135deg, var(--am1), var(--am2), var(--am3));
+      min-height:100vh;
     }
-    h1{ margin:0; font-size:16px; letter-spacing:.2px; }
-    .sub{ margin-top:6px; color: rgba(229,231,235,.72); font-size:12.5px; line-height:1.35; }
 
-    main{ max-width: 980px; margin:0 auto; padding: 14px 16px 90px; }
+    /* App shell */
+    header{
+      position:sticky; top:0; z-index:10;
+      padding: 14px 14px 10px;
+      background: rgba(255,255,255,.55);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(27,36,48,.08);
+    }
+    .topRow{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      max-width: 980px; margin: 0 auto;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+    .logoDot{
+      width:14px; height:14px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, var(--mint), var(--sky));
+      box-shadow: 0 0 0 6px rgba(185,243,228,.25);
+    }
+    .subtitle{
+      margin-top:6px;
+      max-width: 980px; margin-left:auto; margin-right:auto;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+      padding: 0 2px;
+    }
 
-    /* Tabs + soft animation */
-    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; align-items:center; }
+    /* Tabs */
+    .tabs{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      max-width: 980px; margin: 10px auto 0;
+    }
     .tab{
-      padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color:#e5e7eb;
-      cursor:pointer; font-weight:750; font-size:12.5px;
-      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      padding: 9px 12px;
+      border-radius: 999px;
+      font-weight: 850;
+      font-size: 12.5px;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
     }
     .tab:active{ transform: scale(.98); }
     .tab.active{
-      border-color: rgba(122,167,255,.55);
-      background: rgba(122,167,255,.20);
+      border-color: rgba(27,36,48,.18);
+      background: rgba(255,255,255,.82);
     }
 
-    /* Minimal mode toggle (header right) */
+    /* Minimal toggle */
     .toggle{
       margin-left:auto;
       display:flex; align-items:center; gap:10px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      font-size:12px;
-      color: rgba(229,231,235,.85);
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.55);
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+      font-size: 12px;
+      color: var(--muted);
       user-select:none;
     }
     .switch{
-      width:42px; height:22px;
-      border-radius:999px;
-      background: rgba(255,255,255,.12);
+      width:44px; height:24px; border-radius:999px;
+      border: 1px solid rgba(27,36,48,.12);
+      background: rgba(27,36,48,.06);
       position:relative;
-      border:1px solid rgba(255,255,255,.12);
       cursor:pointer;
+      transition: background .18s ease, border-color .18s ease;
     }
     .switch::after{
       content:"";
-      width:18px; height:18px;
-      border-radius:50%;
-      background: rgba(255,255,255,.85);
+      width:20px; height:20px; border-radius:50%;
+      background: rgba(255,255,255,.95);
       position:absolute; top:1px; left:1px;
-      transition: transform .20s ease;
+      box-shadow: 0 6px 14px rgba(15,23,42,.14);
+      transition: transform .18s ease;
     }
     .switch.on{
-      background: rgba(115,230,196,.20);
-      border-color: rgba(115,230,196,.35);
+      background: rgba(185,243,228,.65);
+      border-color: rgba(43,182,115,.30);
     }
     .switch.on::after{ transform: translateX(20px); }
 
-    /* Status pills */
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .pill{
-      padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color: rgba(229,231,235,.75);
-      font-size:12px;
-    }
-    .pill strong{ color:#e5e7eb; }
+    main{ max-width: 980px; margin: 0 auto; padding: 14px 14px 90px; }
 
-    /* Views with animation */
-    .view{
-      opacity:0;
-      transform: translateY(6px);
-      transition: opacity .22s ease, transform .22s ease;
-      will-change: opacity, transform;
-      display:none;
-    }
-    .view.active{
-      opacity:1;
-      transform: translateY(0);
-    }
+    /* Views + animation */
+    .view{ display:none; opacity:0; transform: translateY(8px); transition: opacity .22s ease, transform .22s ease; }
+    .view.active{ opacity:1; transform: translateY(0); }
 
-    .grid{ display:grid; grid-template-columns: 1fr; gap:12px; margin-top:12px; }
-    @media (min-width:820px){ .grid{ grid-template-columns: 1fr 1fr; } }
-
-    /* Day/Night section styling */
-    .section{
-      border-radius: var(--radius);
-      overflow:hidden;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-    .sectionHeader{
-      padding:12px 14px;
-      display:flex; align-items:center; justify-content:space-between; gap:10px;
-      font-weight:850;
-      letter-spacing:.2px;
-    }
-    .sectionBody{
-      padding:14px;
-    }
-
-    .day .sectionHeader{
-      background: rgba(255, 220, 120, .35);
-      color: var(--day-text);
-      border-bottom:1px solid var(--day-border);
-    }
-    .day{
-      background: var(--day-bg);
-      color: var(--day-text);
-    }
-    .day .muted{ color: var(--day-muted); }
-    .day .item{ border-top:1px solid var(--day-border); }
-    .day input[type="checkbox"]{ accent-color: #5E8FFF; }
-    .day .noteBox, .day textarea, .day input[type="date"], .day select{
-      background: rgba(255,255,255,.72);
-      border:1px solid var(--day-border);
-      color: var(--day-text);
-    }
-
-    .night .sectionHeader{
-      background: rgba(122,167,255,.18);
-      color: var(--night-text);
-      border-bottom:1px solid var(--night-border);
-    }
-    .night{
-      background: var(--night-bg);
-      color: var(--night-text);
-    }
-    .night .muted{ color: var(--night-muted); }
-    .night .item{ border-top:1px solid var(--night-border); }
-    .night input[type="checkbox"]{ accent-color: #7AA7FF; }
-    .night .noteBox, .night textarea, .night input[type="date"], .night select{
-      background: rgba(255,255,255,.06);
-      border:1px solid var(--night-border);
-      color: var(--night-text);
-    }
-
-    /* Cards (neutral) */
+    /* Cards */
     .card{
-      background: rgba(17,24,39,.92);
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: var(--radius);
-      padding:14px;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.70);
+      border-radius: var(--r);
       box-shadow: var(--shadow);
+      padding: 14px;
     }
-    .card h2{ margin:0 0 10px; font-size:14px; }
-    .card h3{ margin:12px 0 8px; font-size:13px; }
-
-    .muted{ color: rgba(229,231,235,.70); font-size:12px; line-height:1.35; }
-    .small{ font-size:11.5px; color: rgba(229,231,235,.70); }
-
-    /* Checklist items */
-    .item{ display:flex; align-items:flex-start; gap:10px; padding:10px 0; }
-    .item:first-of-type{ border-top:none; padding-top:0; }
-    input[type="checkbox"]{ width:18px; height:18px; margin-top:2px; }
-
-    .label{ flex:1; }
-    .tline{ display:flex; align-items:center; gap:8px; }
-    .t{ font-size:13.5px; font-weight:850; }
-    .d{ font-size:12px; margin-top:4px; line-height:1.3; }
-
-    /* Info icon + tooltip */
-    .info{
-      width:18px; height:18px;
-      border-radius:50%;
-      display:inline-flex; align-items:center; justify-content:center;
-      font-size:12px; font-weight:900;
-      cursor:pointer;
-      border:1px solid rgba(255,255,255,.20);
-      background: rgba(255,255,255,.10);
-      color: inherit;
-      opacity:.9;
+    .card.soft{
+      background: rgba(255,255,255,.55);
+      box-shadow: var(--shadow2);
     }
-    .tooltip{
-      display:none;
-      margin-top:8px;
-      padding:10px;
-      border-radius:12px;
-      font-size:12px;
-      line-height:1.35;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.12);
+    .h2{
+      margin:0;
+      font-size: 14px;
+      font-weight: 950;
+      letter-spacing: .2px;
     }
-    .day .tooltip{
-      border:1px solid var(--day-border);
-      background: rgba(255,255,255,.58);
-      color: var(--day-text);
-    }
-    .night .tooltip{
-      border:1px solid var(--night-border);
-      background: rgba(255,255,255,.06);
-      color: var(--night-text);
-    }
+    .muted{ color: var(--muted); font-size: 12.5px; line-height: 1.35; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .grid2{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:12px; }
+    @media(min-width:820px){ .grid2{ grid-template-columns: 1fr 1fr; } }
 
-    /* Actions */
-    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
-    button{
-      border:none; border-radius:12px;
-      padding:10px 12px;
-      cursor:pointer;
-      font-weight:850;
-      background: rgba(255,255,255,.08);
-      color:#e5e7eb;
-      border:1px solid rgba(255,255,255,.10);
-      font-size:12.5px;
-      transition: transform .15s ease, background .15s ease;
-    }
-    button:active{ transform: scale(.98); }
-    button.primary{ background: rgba(122,167,255,.20); border-color: rgba(122,167,255,.35); }
-    button.good{ background: rgba(115,230,196,.14); border-color: rgba(115,230,196,.30); }
-    button.warn{ background: rgba(255,211,138,.14); border-color: rgba(255,211,138,.30); }
-    button.danger{ background: rgba(255,159,176,.14); border-color: rgba(255,159,176,.30); }
-
-    /* Inputs */
-    textarea, input[type="date"], select{
-      width:100%;
-      padding:10px 11px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      color:#e5e7eb;
-      outline:none;
-    }
-    textarea{ min-height:110px; resize:vertical; }
-
-    .split{ display:grid; grid-template-columns:1fr; gap:10px; }
-    @media (min-width:820px){ .split{ grid-template-columns:1fr 1fr; } }
-
-    /* Summary chips + progress */
-    .chipRow{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
-    .chip{
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.10);
-      background: rgba(255,255,255,.06);
-      font-size:12px;
-      color: rgba(229,231,235,.75);
-    }
-    .chip strong{ color:#e5e7eb; }
-    .progressWrap{ margin-top:10px; }
-    .progressBar{
-      height:10px; border-radius:999px;
-      background: rgba(255,255,255,.06);
+    /* Big banner */
+    .hero{
+      border-radius: calc(var(--r) + 6px);
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: var(--shadow);
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.10);
+      position:relative;
+      background: radial-gradient(circle at 20% 10%, rgba(185,243,228,.55), transparent 45%),
+                  radial-gradient(circle at 85% 25%, rgba(198,216,255,.55), transparent 45%),
+                  rgba(255,255,255,.55);
     }
-    .progressFill{
-      height:100%;
-      width:0%;
-      background: linear-gradient(90deg, rgba(122,167,255,.55), rgba(115,230,196,.50));
-      transition: width .25s ease;
+    .heroTitle{
+      font-size: 16px;
+      font-weight: 1000;
+      margin:0;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .heroSub{
+      margin-top:6px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(27,36,48,.08);
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+      font-weight: 900;
+      font-size: 12px;
+      color: rgba(27,36,48,.78);
+      margin-top: 10px;
+    }
+    .pillDot{ width:9px; height:9px; border-radius:50%; background: var(--sky); }
+
+    /* Progress ring */
+    .ringWrap{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-top: 12px;
+    }
+    .ring{
+      width: 74px; height: 74px;
+      border-radius: 50%;
+      background:
+        conic-gradient(var(--violet) var(--p,0%), rgba(27,36,48,.08) 0);
+      display:grid;
+      place-items:center;
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: 0 10px 22px rgba(15,23,42,.08);
+    }
+    .ringInner{
+      width: 60px; height: 60px; border-radius: 50%;
+      background: rgba(255,255,255,.85);
+      display:grid;
+      place-items:center;
+      border: 1px solid rgba(27,36,48,.08);
+      font-weight: 1000;
+      font-size: 14px;
     }
 
-    /* Pre-start banner */
-    .banner{
-      margin-top:12px;
-      border-radius: var(--radius);
-      padding:12px;
-      border:1px solid rgba(255,211,138,.35);
-      background: rgba(255,211,138,.12);
-      color:#ffe8bb;
+    /* Ritual steps */
+    .steps{
+      margin-top: 12px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
-    .banner strong{ color:#ffe0a5; }
+    .step{
+      padding: 12px;
+      border-radius: var(--r);
+      border: 1px solid rgba(255,255,255,.75);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 10px 25px rgba(15,23,42,.08);
+      transition: transform .15s ease, background .15s ease, opacity .15s ease;
+      position:relative;
+    }
+    .step.current{
+      background: rgba(255,255,255,.86);
+      transform: translateY(-1px);
+      outline: 2px solid rgba(185,243,228,.55);
+    }
+    .step.done{
+      background: rgba(185,243,228,.42);
+      border-color: rgba(43,182,115,.25);
+    }
+    .stepTop{
+      display:flex; justify-content:space-between; align-items:flex-start; gap:10px;
+    }
+    .stepLabel{
+      font-weight: 1000;
+      font-size: 13px;
+      margin:0;
+    }
+    .stepDesc{
+      margin-top:6px;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height:1.3;
+    }
 
-    /* Minimal mode: hide descriptions + tooltips + notes body */
-    body.minimal .d,
-    body.minimal .tooltip,
-    body.minimal .notesCard .muted,
-    body.minimal .notesCard textarea{
-      display:none !important;
-    }
-    body.minimal .notesCard .actions{
-      margin-top:0;
-    }
-
-    .hr{ height:1px; background: rgba(255,255,255,.08); margin:12px 0; }
-
-    /* Replacements list */
-    .list{ display:flex; flex-direction:column; gap:10px; margin-top:8px; }
-    .alt{
-      border:1px solid rgba(255,255,255,.10);
-      border-radius:14px;
-      padding:10px;
-      background: rgba(255,255,255,.05);
-    }
-    .alt .top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-    .alt .name{ font-weight:900; font-size:13px; }
-    .alt .desc{ margin-top:6px; color: rgba(229,231,235,.70); font-size:12px; line-height:1.35; }
-    .meta{ display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; }
-    .tag{
-      font-size:11px; padding:4px 8px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      color: rgba(229,231,235,.75);
-      background: rgba(255,255,255,.04);
+    .chip{
+      display:inline-flex; align-items:center; gap:7px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(27,36,48,.08);
+      background: rgba(255,255,255,.70);
+      font-size: 12px;
+      font-weight: 900;
+      color: rgba(27,36,48,.72);
       white-space:nowrap;
     }
-    .tag.good{ border-color: rgba(115,230,196,.28); background: rgba(115,230,196,.12); color:#c9ffef; }
-    .tag.warn{ border-color: rgba(255,211,138,.28); background: rgba(255,211,138,.12); color:#fff0cf; }
+    .chip.emoji{ background: rgba(198,216,255,.35); }
+    .chip.mint{ background: rgba(185,243,228,.35); }
+    .chip.sun{ background: rgba(255,211,138,.35); }
+    .chip.pink{ background: rgba(255,179,198,.35); }
+    .chip.violet{ background: rgba(184,168,255,.32); }
+
+    /* Buttons */
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
+    button{
+      border:none;
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-weight: 950;
+      font-size: 12.5px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(15,23,42,.10);
+      transition: transform .15s ease, filter .15s ease, background .15s ease;
+    }
+    button:active{ transform: scale(.98); }
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(185,243,228,.95), rgba(198,216,255,.95));
+      color: rgba(27,36,48,.90);
+      border: 1px solid rgba(255,255,255,.70);
+    }
+    .btnGhost{
+      background: rgba(255,255,255,.65);
+      border: 1px solid rgba(27,36,48,.10);
+      color: rgba(27,36,48,.85);
+    }
+    .btnDanger{
+      background: rgba(255,179,198,.75);
+      border: 1px solid rgba(255,179,198,.45);
+      color: rgba(27,36,48,.88);
+    }
+
+    /* Info tooltip */
+    .infoBtn{
+      width: 26px; height: 26px; border-radius: 999px;
+      display:inline-grid; place-items:center;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.75);
+      cursor:pointer;
+      font-weight: 1000;
+      color: rgba(27,36,48,.70);
+      box-shadow: 0 8px 18px rgba(15,23,42,.06);
+      flex: 0 0 auto;
+    }
+    .tip{
+      display:none;
+      margin-top:10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(27,36,48,.10);
+      color: rgba(27,36,48,.85);
+      font-size: 12.5px;
+      line-height:1.35;
+      box-shadow: 0 10px 25px rgba(15,23,42,.08);
+    }
+
+    /* Notes */
+    textarea{
+      width:100%;
+      margin-top:10px;
+      padding: 11px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.75);
+      outline:none;
+      color: var(--ink);
+      min-height: 120px;
+      resize: vertical;
+      box-shadow: 0 10px 25px rgba(15,23,42,.06);
+    }
+
+    /* Calendar */
+    .calWrap{ margin-top:12px; }
+    .calHeader{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-bottom:10px;
+    }
+    .calTitle{ font-weight: 1000; font-size: 14px; }
+    .calGrid{
+      display:grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+    .dow{
+      text-align:center;
+      font-size: 11.5px;
+      color: rgba(27,36,48,.55);
+      font-weight: 900;
+      padding: 4px 0;
+    }
+    .day{
+      border-radius: 16px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.75);
+      box-shadow: 0 10px 22px rgba(15,23,42,.06);
+      padding: 10px 10px 8px;
+      min-height: 62px;
+      position:relative;
+      cursor:pointer;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .day:active{ transform: scale(.99); }
+    .dayNum{
+      font-weight: 1000;
+      font-size: 12.5px;
+      color: rgba(27,36,48,.80);
+    }
+    .dots{
+      display:flex; gap:6px; flex-wrap:wrap;
+      margin-top:8px;
+      align-items:center;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: rgba(27,36,48,.16);
+      border: 1px solid rgba(255,255,255,.75);
+    }
+    .dot.am{ background: var(--sun); }
+    .dot.pm{ background: var(--sky); }
+    .dot.tret{ background: var(--violet); }
+    .dot.full{ background: var(--mint); }
+
+    /* Settings */
+    .secTitle{
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+      margin-top: 2px;
+    }
+    .field{
+      margin-top: 10px;
+    }
+    label{
+      display:block;
+      font-size: 12px;
+      font-weight: 950;
+      color: rgba(27,36,48,.75);
+      margin-bottom: 6px;
+    }
+    input[type="date"], select{
+      width:100%;
+      padding: 10px 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.75);
+      box-shadow: 0 10px 25px rgba(15,23,42,.06);
+      color: var(--ink);
+      outline:none;
+      font-weight: 850;
+    }
+    .dayPick{
+      display:flex; gap:8px; flex-wrap:wrap; margin-top: 8px;
+    }
+    .dayBtn{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(27,36,48,.10);
+      background: rgba(255,255,255,.65);
+      cursor:pointer;
+      font-weight: 950;
+      font-size: 12px;
+      box-shadow: 0 8px 18px rgba(15,23,42,.05);
+    }
+    .dayBtn.on{
+      background: rgba(185,243,228,.65);
+      border-color: rgba(43,182,115,.25);
+    }
+
+    /* Product swap cards */
+    .prodCard{
+      margin-top:10px;
+      padding: 12px;
+      border-radius: var(--r);
+      border: 1px solid rgba(255,255,255,.75);
+      background: rgba(255,255,255,.58);
+      box-shadow: 0 10px 22px rgba(15,23,42,.07);
+    }
+    .prodTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    }
+    .prodName{ font-weight: 1000; font-size: 13px; margin:0; }
+    .prodVal{ color: var(--muted); font-size: 12.5px; line-height:1.35; margin-top:6px; }
+    .badge{
+      display:inline-flex; align-items:center; gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 950;
+      border: 1px solid rgba(27,36,48,.08);
+      background: rgba(255,255,255,.70);
+      white-space:nowrap;
+    }
+    .badge.primary{ background: rgba(198,216,255,.45); }
+    .badge.active{ background: rgba(185,243,228,.50); }
+    .badge.value{ background: rgba(255,211,138,.40); }
+
+    /* Minimal mode */
+    body.minimal .muted,
+    body.minimal .stepDesc,
+    body.minimal textarea,
+    body.minimal .tip{
+      display:none !important;
+    }
+
+    /* Night background helper */
+    body.nightBG{
+      background: linear-gradient(135deg, var(--pm1), var(--pm2), var(--pm3));
+      color: var(--ink);
+    }
   </style>
 </head>
 
 <body>
 <header>
-  <h1>Derm Routine Tracker</h1>
-  <div class="sub">
-    Built for: stable melasma (cheeks/upper lip/forehead), hormonal breakouts, tretinoin ramp-up, HQ taper.
-    Data stays on this device (localStorage).
-  </div>
-
-  <div class="tabs" id="tabs">
-    <!-- tabs injected -->
-    <div class="toggle" title="Minimal mode hides descriptions and notes text area">
-      Minimal
-      <div id="minimalSwitch" class="switch" role="switch" aria-checked="false"></div>
+  <div class="topRow">
+    <div class="brand">
+      <div class="logoDot"></div>
+      <div>Routine ✨</div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <div class="toggle" title="Minimal hides descriptions and notes input">
+        Minimal
+        <div id="minimalSwitch" class="switch" role="switch" aria-checked="false"></div>
+      </div>
     </div>
   </div>
+  <div class="subtitle">
+    Your playful pastel skincare companion. Everything stays on this device (no login, no cloud).
+  </div>
+  <div class="tabs" id="tabs"></div>
 </header>
 
 <main>
-  <div class="row" id="statusRow"></div>
-  <div id="preStartBanner"></div>
-
   <!-- TODAY -->
   <section id="view-today" class="view">
-    <div class="card">
-      <h2>Today summary</h2>
-      <div class="chipRow" id="summaryChips"></div>
-      <div class="progressWrap">
-        <div class="small" id="progressLabel">Progress: 0%</div>
-        <div class="progressBar"><div class="progressFill" id="progressFill"></div></div>
-      </div>
-      <div class="actions">
-        <button class="good" id="markAM">Mark AM done</button>
-        <button class="good" id="markPM">Mark PM done</button>
-        <button id="clearToday">Clear today</button>
-      </div>
-    </div>
+    <div class="hero" id="hero"></div>
 
-    <div class="grid">
-      <div class="section day" id="amSection"></div>
-      <div class="section night" id="pmSection"></div>
-    </div>
-
-    <div class="card notesCard" style="margin-top:12px;">
-      <h2>Notes</h2>
-      <div class="muted">Track irritation, flaking, melasma changes, pimples, sun/heat exposure, cycle timing, etc.</div>
-      <textarea id="notes" placeholder="Example: slight flaking around nose; no melasma darkening; 1 hormonal pimple on chin."></textarea>
-      <div class="actions">
-        <button class="primary" id="saveNotes">Save notes</button>
-        <button id="clearNotes">Clear notes</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- PLAN -->
-  <section id="view-plan" class="view">
-    <div class="card">
-      <h2>Plan settings</h2>
-
-      <div class="split">
-        <div>
-          <div class="small">Protocol start date (Night 1 = Tretinoin)</div>
-          <input type="date" id="startDate" />
+    <div class="grid2" style="margin-top:12px;">
+      <div class="card soft">
+        <div class="secTitle">
+          <div class="h2">Your ritual</div>
+          <div class="row">
+            <span class="chip emoji" id="chipAM">☀️ AM</span>
+            <span class="chip violet" id="chipPM">🌙 PM</span>
+          </div>
         </div>
-        <div>
-          <div class="small">HQ taper phase</div>
-          <select id="hqPhase">
-            <option value="phase1">Phase 1 (Month 1): HQ 3 mornings/week</option>
-            <option value="phase2">Phase 2 (Month 2): HQ 2 mornings/week</option>
-            <option value="phase3">Phase 3 (Month 3+): HQ OFF (maintenance)</option>
-          </select>
+
+        <div class="ringWrap">
+          <div>
+            <div class="muted" id="todayHint">Tap “Next” to flow through steps (like a mini ritual).</div>
+            <div class="row" style="margin-top:10px;">
+              <span class="chip mint" id="amTypeChip">AM: —</span>
+              <span class="chip violet" id="pmTypeChip">PM: —</span>
+            </div>
+          </div>
+          <div class="ring" id="ring"><div class="ringInner" id="ringPct">0%</div></div>
+        </div>
+
+        <div class="actions">
+          <button class="btnPrimary" id="btnNext">Next step</button>
+          <button class="btnGhost" id="btnMarkAll">Mark today done</button>
+          <button class="btnGhost" id="btnClearToday">Clear today</button>
         </div>
       </div>
 
-      <div class="hr"></div>
-
-      <h3>HQ mornings (optional)</h3>
-      <div class="muted">
-        Pick exactly <strong>3</strong> days for Phase 1 (or <strong>2</strong> days for Phase 2).
-        If you don’t pick days, the app will still show the general taper guidance.
+      <div class="card soft notesCard">
+        <div class="secTitle">
+          <div class="h2">Notes</div>
+          <span class="chip pink">📝</span>
+        </div>
+        <div class="muted">Optional: track irritation, melasma changes, breakouts, sun/heat exposure.</div>
+        <textarea id="notes" placeholder="Example: slight dryness around nose; no melasma darkening; 1 hormonal pimple on chin."></textarea>
+        <div class="actions">
+          <button class="btnPrimary" id="btnSaveNotes">Save notes</button>
+          <button class="btnGhost" id="btnClearNotes">Clear notes</button>
+        </div>
       </div>
-      <div class="chipRow" id="hqDayPicker"></div>
-      <div class="small" id="hqDaysHint"></div>
+    </div>
 
-      <div class="hr"></div>
+    <div class="card" style="margin-top:12px;">
+      <div class="secTitle">
+        <div class="h2">Today’s steps</div>
+        <span class="chip sun" id="dateChip">📅</span>
+      </div>
+      <div class="muted" id="preStartBanner" style="margin-top:6px;"></div>
 
-      <div class="muted">
-        <strong>Night rotation (4-night cycle):</strong>
-        Night 1 = Tretinoin • Night 2 = Recovery • Night 3 = Azelaic • Night 4 = Recovery.
+      <div class="steps" id="steps"></div>
+    </div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section id="view-calendar" class="view">
+    <div class="card">
+      <div class="calHeader">
+        <div class="calTitle" id="calTitle">Calendar</div>
+        <div class="row">
+          <button class="btnGhost" id="calPrev">◀︎</button>
+          <button class="btnGhost" id="calToday">Today</button>
+          <button class="btnGhost" id="calNext">▶︎</button>
+        </div>
       </div>
 
-      <div class="actions">
-        <button class="primary" id="saveSettings">Save settings</button>
-        <button class="danger" id="resetAll">Reset app data</button>
+      <div class="row" style="margin-bottom:10px;">
+        <span class="chip sun">🟡 AM done</span>
+        <span class="chip emoji">🔵 PM done</span>
+        <span class="chip violet">🟣 Tret night</span>
+        <span class="chip mint">🌿 Full day</span>
+      </div>
+
+      <div class="calGrid" id="calGrid"></div>
+
+      <div class="tip" id="calTip" style="display:block; margin-top:12px;">
+        Tap a date to see what you completed (AM/PM) and whether it was a tret night.
       </div>
     </div>
   </section>
 
-  <!-- PRODUCTS -->
-  <section id="view-products" class="view">
-    <div class="card" id="productCabinet"></div>
-  </section>
+  <!-- SETTINGS -->
+  <section id="view-settings" class="view">
+    <div class="card">
+      <div class="secTitle">
+        <div class="h2">Settings</div>
+        <span class="chip emoji">⚙️</span>
+      </div>
+      <div class="muted">All the “logic” lives here—Today stays calm and simple.</div>
 
-  <!-- REPLACEMENTS -->
-  <section id="view-alternatives" class="view">
-    <div class="card" id="alternatives"></div>
+      <div class="field">
+        <label for="startDate">Protocol start date (Night 1 = Renewal Night / Tret)</label>
+        <input type="date" id="startDate" />
+      </div>
+
+      <div class="field">
+        <label for="hqPhase">Hydroquinone taper phase</label>
+        <select id="hqPhase">
+          <option value="phase1">Phase 1 (Month 1): HQ 3 mornings/week</option>
+          <option value="phase2">Phase 2 (Month 2): HQ 2 mornings/week</option>
+          <option value="phase3">Phase 3 (Month 3+): HQ OFF (maintenance)</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>HQ mornings (optional)</label>
+        <div class="muted">Pick 3 days for Phase 1 (or 2 days for Phase 2). If you leave it blank, we’ll show general guidance.</div>
+        <div class="dayPick" id="hqDays"></div>
+        <div class="muted" id="hqHint" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="field">
+        <label>Products (tap “Swap” for alternatives)</label>
+        <div id="products"></div>
+      </div>
+
+      <div class="actions" style="margin-top:14px;">
+        <button class="btnPrimary" id="btnSaveSettings">Save settings</button>
+        <button class="btnDanger" id="btnReset">Reset app data</button>
+      </div>
+    </div>
   </section>
 </main>
 
@@ -459,8 +655,7 @@
     settings: {
       rotationStart: new Date().toISOString().slice(0,10),
       hqPhase: "phase1",
-      // optional: HQ days 0=Sun..6=Sat (leave empty to not enforce)
-      hqDays: [1,3,5],
+      hqDays: [1,3,5], // Mon/Wed/Fri default
       minimalMode: false
     },
     activeProducts: {
@@ -472,689 +667,782 @@
       sunscreen: "Eucerin SPF 50",
       tretinoin: "Tretinoin 0.025% cream (Rx)"
     },
-    logs: {}
+    logs: {} // YYYY-MM-DD => { steps:{id:true}, notes:"" }
   };
 
-  // Replacement library (compact but useful)
-  const PRODUCT_LIBRARY = {
-    cleanser: {
-      primary: { name:"SkinMedica Facial Cleanser", tier:"$$", value:"High", note:"Gentle, retinoid-friendly cleanser." },
-      alts: [
-        { name:"La Roche-Posay Toleriane Hydrating Gentle Cleanser", tier:"$", value:"Very High", note:"Best cost/benefit; barrier-friendly." },
-        { name:"CeraVe Hydrating Cleanser", tier:"$", value:"High", note:"Great value; very gentle if you get dry with tret." }
-      ]
-    },
-    azelaic: {
-      primary: { name:"Prescription Azelaic Acid 15% (Finacea or generic)", tier:"$$", value:"Very High", note:"Strong maintenance for melasma + hormonal acne." },
-      alts: [
-        { name:"Prescription Azelaic Acid 20% cream (generic)", tier:"$$", value:"Very High", note:"Stronger option; discuss with dermatologist." },
-        { name:"The Ordinary Azelaic Acid 10% (OTC)", tier:"$", value:"High", note:"Budget option; typically less potent than Rx." }
-      ]
-    },
-    tretinoin: {
-      primary: { name:"Tretinoin 0.025% cream (Rx)", tier:"$$", value:"Very High", note:"Gold standard for collagen, texture, acne control." },
-      alts: [
-        { name:"Adapalene 0.1% gel (OTC)", tier:"$", value:"High", note:"Gentler retinoid alternative if needed." },
-        { name:"Tretinoin 0.05% cream (Rx)", tier:"$$", value:"High", note:"Step-up after months of stability on 0.025%." }
-      ]
-    },
-    moisturizerBarrier: {
-      primary: { name:"SkinMedica Dermal Repair Cream", tier:"$$$", value:"High", note:"Barrier support for tret nights / dryness." },
-      alts: [
-        { name:"La Roche-Posay Cicaplast Balm B5+", tier:"$", value:"Very High", note:"Excellent cost/benefit for irritation and flaking." },
-        { name:"Obagi Hydrate Luxe (PM)", tier:"$$$", value:"High", note:"Rich PM moisturizer; good if you prefer Obagi." }
-      ]
-    },
-    moisturizerLight: {
-      primary: { name:"Seacra Marine Algae Gel", tier:"$$", value:"Medium", note:"Light hydration layer; may not be enough alone with frequent tret." },
-      alts: [
-        { name:"Vanicream Daily Facial Moisturizer", tier:"$", value:"High", note:"Simple, low-irritant daily moisturizer." },
-        { name:"CeraVe PM Facial Moisturizing Lotion", tier:"$", value:"High", note:"Light but barrier-supportive; solid value." }
-      ]
-    },
-    sunscreen: {
-      primary: { name:"Eucerin SPF 50", tier:"$", value:"High", note:"Non-negotiable for melasma stability." },
-      alts: [
-        { name:"EltaMD UV Clear SPF 46", tier:"$$", value:"High", note:"Popular for acne-prone + pigmentation-prone skin." },
-        { name:"La Roche-Posay Anthelios SPF 50+", tier:"$$", value:"High", note:"Strong UV protection; multiple textures." }
-      ]
-    }
+  // Alternatives (playful + cost/benefit)
+  const ALT = {
+    cleanser: [
+      { name:"SkinMedica Facial Cleanser", tier:"$$", value:"High", note:"Gentle, retinoid-friendly cleanser.", primary:true },
+      { name:"La Roche-Posay Toleriane Hydrating Gentle Cleanser", tier:"$", value:"Very High", note:"Best cost/benefit; barrier-friendly." },
+      { name:"CeraVe Hydrating Cleanser", tier:"$", value:"High", note:"Very gentle; solid value if you get dry." }
+    ],
+    azelaic: [
+      { name:"Prescription Azelaic Acid 15% (Finacea or generic)", tier:"$$", value:"Very High", note:"Strong maintenance for pigment + acne.", primary:true },
+      { name:"Prescription Azelaic Acid 20% cream (generic)", tier:"$$", value:"Very High", note:"Stronger option; discuss with dermatologist." },
+      { name:"The Ordinary Azelaic Acid 10% (OTC)", tier:"$", value:"High", note:"Budget option; typically less potent than Rx." }
+    ],
+    tretinoin: [
+      { name:"Tretinoin 0.025% cream (Rx)", tier:"$$", value:"Very High", note:"Gold standard for collagen + acne control.", primary:true },
+      { name:"Adapalene 0.1% gel (OTC)", tier:"$", value:"High", note:"Gentler retinoid alternative if needed." },
+      { name:"Tretinoin 0.05% cream (Rx)", tier:"$$", value:"High", note:"Step-up after stability on 0.025%." }
+    ],
+    moisturizerBarrier: [
+      { name:"SkinMedica Dermal Repair Cream", tier:"$$$", value:"High", note:"Barrier support for tret nights.", primary:true },
+      { name:"La Roche-Posay Cicaplast Balm B5+", tier:"$", value:"Very High", note:"Excellent cost/benefit for irritation." },
+      { name:"Obagi Hydrate Luxe (PM)", tier:"$$$", value:"High", note:"Rich PM moisturizer; luxury feel." }
+    ],
+    moisturizerLight: [
+      { name:"Seacra Marine Algae Gel", tier:"$$", value:"Medium", note:"Light hydration layer.", primary:true },
+      { name:"Vanicream Daily Facial Moisturizer", tier:"$", value:"High", note:"Simple, low-irritant daily moisturizer." },
+      { name:"CeraVe PM Facial Moisturizing Lotion", tier:"$", value:"High", note:"Light but barrier-supportive; solid value." }
+    ],
+    sunscreen: [
+      { name:"Eucerin SPF 50", tier:"$", value:"High", note:"Non-negotiable for melasma stability.", primary:true },
+      { name:"EltaMD UV Clear SPF 46", tier:"$$", value:"High", note:"Great for acne-prone + pigmentation-prone skin." },
+      { name:"La Roche-Posay Anthelios SPF 50+", tier:"$$", value:"High", note:"Strong UV protection; multiple textures." }
+    ]
+  };
+
+  // Step “why” explanations (brief)
+  const WHY = {
+    cleanse: "Removes sunscreen/oil gently so actives work better.",
+    vitaminC: "Antioxidant + brightening support + collagen friendly.",
+    hq: "Targets melasma pigment production (use in cycles/taper).",
+    azelaic: "Calms inflammation + supports pigment stability + helps acne.",
+    hydrate: "Comfort + barrier support = better tolerance.",
+    sunscreen: "Your #1 melasma protector (and wrinkle prevention).",
+    wait: "Applying tret on dry skin reduces irritation.",
+    tret: "Gold standard for collagen + texture + acne control (start slow).",
+    barrier: "Repairs barrier and reduces flaking/irritation."
   };
 
   const TABS = [
-    { id:"today", label:"Today" },
-    { id:"plan", label:"Plan" },
-    { id:"products", label:"Products" },
-    { id:"alternatives", label:"Replacements" }
+    { id:"today", label:"Today 🌸" },
+    { id:"calendar", label:"Calendar 📅" },
+    { id:"settings", label:"Settings ⚙️" }
   ];
 
   const $ = (id)=>document.getElementById(id);
 
   function loadState(){
     try{
-      const raw = localStorage.getItem("dermRoutineState");
+      const raw = localStorage.getItem("routine_state_v2");
       return raw ? JSON.parse(raw) : structuredClone(DEFAULT);
     } catch {
       return structuredClone(DEFAULT);
     }
   }
   function saveState(){
-    localStorage.setItem("dermRoutineState", JSON.stringify(state));
+    localStorage.setItem("routine_state_v2", JSON.stringify(state));
   }
-
   let state = loadState();
 
-  // ---------------- Helpers ----------------
+  // ---------------- Date helpers ----------------
   function todayISO(){
     const d = new Date();
     return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0,10);
   }
-
   function daysBetween(aISO, bISO){
     const a = new Date(aISO+"T00:00:00");
     const b = new Date(bISO+"T00:00:00");
     return Math.floor((b - a) / (1000*60*60*24));
   }
-
+  function weekdayNum(dateISO){
+    return new Date(dateISO+"T00:00:00").getDay(); // 0 Sun..6 Sat
+  }
   function isBeforeStart(dateISO){
     return daysBetween(state.settings.rotationStart, dateISO) < 0;
   }
 
-  function nightTypeFor(dateISO){
-    if (isBeforeStart(dateISO)) return "Prep Mode";
+  // ---------------- Protocol logic ----------------
+  function nightType(dateISO){
+    if(isBeforeStart(dateISO)) return "Prep";
     const delta = daysBetween(state.settings.rotationStart, dateISO);
     const mod = ((delta % 4) + 4) % 4;
-    if(mod===0) return "Tretinoin Night";
-    if(mod===2) return "Azelaic Night";
-    return "Recovery Night";
+    if(mod === 0) return "Renewal";     // Tret
+    if(mod === 2) return "Calm+Clear";  // Azelaic
+    return "Restore";                  // Recovery
   }
 
-  function hqGuidance(){
+  function hqNeededCount(){
     const p = state.settings.hqPhase;
-    if(p==="phase1") return "HQ 3 mornings/week (Month 1 taper).";
-    if(p==="phase2") return "HQ 2 mornings/week (Month 2 taper).";
-    return "HQ OFF (maintenance).";
-  }
-
-  function weekdayNum(dateISO){
-    const d = new Date(dateISO+"T00:00:00");
-    return d.getDay(); // 0 Sun..6 Sat
+    if(p==="phase1") return 3;
+    if(p==="phase2") return 2;
+    return 0;
   }
 
   function isHQDay(dateISO){
-    const phase = state.settings.hqPhase;
-    if(phase==="phase3") return false;
+    if(state.settings.hqPhase === "phase3") return false;
     const days = state.settings.hqDays || [];
-    if(!Array.isArray(days) || days.length===0) return null; // unknown / not set
+    if(!Array.isArray(days) || days.length === 0) return null; // not configured
     return days.includes(weekdayNum(dateISO));
   }
 
   function getLog(dateISO){
-    state.logs[dateISO] ||= { am:{}, pm:{}, notes:"" };
+    state.logs[dateISO] ||= { steps:{}, notes:"" };
     return state.logs[dateISO];
   }
 
-  function setCheck(dateISO, slot, id, val){
-    const log = getLog(dateISO);
-    log[slot][id] = val;
-    saveState();
-    render();
-  }
-
-  function setNotes(dateISO, text){
-    const log = getLog(dateISO);
-    log.notes = text || "";
-    saveState();
-    render();
-  }
-
-  function escapeHtml(str){
-    return (str||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  }
-  function escapeJs(str){
-    return (str||"").replace(/\\/g,"\\\\").replace(/'/g,"\\'");
-  }
-  function prettyKey(k){
-    return k.replace(/_/g," ")
-      .replace(/([A-Z])/g," $1")
-      .replace(/\s+/g," ")
-      .trim()
-      .replace(/\b\w/g, c => c.toUpperCase());
-  }
-
-  // ---------------- Educational “?” tooltips (brief) ----------------
-  const INFO = {
-    cleanse: "Removes sunscreen, oil, and debris without stripping. Prepares skin for active ingredients.",
-    vitaminC: "Antioxidant protection + brightening + supports collagen. Helps prevent new pigment.",
-    hydroquinone: "Temporarily suppresses pigment production in melasma-prone areas. Use in cycles/taper.",
-    azelaic: "Calms inflammation, helps hormonal acne, and supports pigment stability (melasma-safe).",
-    hydrate: "Adds hydration to reduce dryness and support tolerance to actives.",
-    sunscreen: "Prevents UV-triggered melasma activation and collagen breakdown. Most important step.",
-    tretinoin: "Gold standard for collagen + texture + acne control. Start slow to avoid irritation/pigment flare.",
-    barrier: "Reinforces skin barrier to reduce irritation, flaking, and sensitivity from actives.",
-    wait: "Applying tret to fully dry skin reduces irritation and helps tolerance."
-  };
-
-  // ---------------- Checklists ----------------
-  function amChecklist(dateISO){
+  // ---------------- Step definitions (guided flow) ----------------
+  function buildSteps(dateISO){
     const ap = state.activeProducts;
-    const phase = state.settings.hqPhase;
-    const hqDay = isHQDay(dateISO); // true/false/null
+    const nt = nightType(dateISO);
+    const hqDay = isHQDay(dateISO);
 
-    const items = [
-      { id:"am_cleanse", title:"Cleanse", desc: ap.cleanser, info: INFO.cleanse },
-      { id:"am_vitc", title:"Vitamin C", desc: `${ap.vitaminC_HQ} (use Vitamin C component daily)`, info: INFO.vitaminC }
-    ];
+    const steps = [];
 
-    if(phase !== "phase3"){
-      // If HQ days are configured, label clearly
-      let hqLabel = "Hydroquinone (tapered)";
-      let hqDesc = `4% HQ: follow taper schedule. ${hqGuidance()}`;
-      if(hqDay === true) {
-        hqLabel = "Hydroquinone (HQ day)";
-      } else if(hqDay === false) {
-        hqLabel = "Hydroquinone (skip today)";
-        hqDesc = "Today is a non-HQ morning (use Azelaic instead).";
-      } else {
-        hqLabel = "Hydroquinone (tapered)";
-      }
-
-      items.push({ id:"am_hq", title:hqLabel, desc:hqDesc, info: INFO.hydroquinone });
-
-      // Azelaic mornings
-      let azLabel = "Azelaic (non-HQ mornings)";
-      let azDesc = `${ap.azelaic} — use on mornings you do NOT apply HQ.`;
-      if(hqDay === true) {
-        azLabel = "Azelaic (skip today)";
-        azDesc = "Today is an HQ morning. Save Azelaic for non-HQ mornings or PM Azelaic night.";
-      } else if(hqDay === false) {
-        azLabel = "Azelaic (today)";
-        azDesc = `${ap.azelaic} — thin layer.`;
-      }
-      items.push({ id:"am_azelaic", title:azLabel, desc:azDesc, info: INFO.azelaic });
-    } else {
-      items.push({ id:"am_azelaic", title:"Azelaic (maintenance)", desc:`${ap.azelaic} — daily or as tolerated.`, info: INFO.azelaic });
-    }
-
-    items.push(
-      { id:"am_hydrate", title:"Hydration layer", desc: ap.moisturizerLight, info: INFO.hydrate },
-      { id:"am_spf", title:"Sunscreen", desc: `${ap.sunscreen} — apply generously (2 finger lengths).`, info: INFO.sunscreen }
-    );
-
-    return items;
-  }
-
-  function pmChecklist(dateISO){
-    const ap = state.activeProducts;
-    const nt = nightTypeFor(dateISO);
-
-    if (nt === "Prep Mode") {
-      return {
-        nightType: "Prep Mode (before start date)",
-        items: [
-          { id:"pm_cleanse", title:"Cleanse", desc: ap.cleanser, info: INFO.cleanse },
-          { id:"pm_recovery", title:"Moisturize", desc: `Use ${ap.moisturizerLight} (and barrier cream if dry). No tret until start date.`, info: INFO.barrier }
-        ]
-      };
-    }
-
-    const items = [
-      { id:"pm_cleanse", title:"Cleanse", desc: ap.cleanser, info: INFO.cleanse },
-    ];
-
-    if(nt==="Tretinoin Night"){
-      items.push(
-        { id:"pm_wait", title:"Wait 20 minutes", desc:"Let skin fully dry to reduce irritation.", info: INFO.wait },
-        { id:"pm_tret", title:"Tretinoin (pea-size)", desc:`${ap.tretinoin} — avoid corners of nose/mouth/eyes. Buffer if needed.`, info: INFO.tretinoin },
-        { id:"pm_barrier", title:"Barrier moisturizer", desc:`${ap.moisturizerBarrier} (or layer over ${ap.moisturizerLight})`, info: INFO.barrier }
-      );
-    } else if(nt==="Azelaic Night"){
-      items.push(
-        { id:"pm_azelaic", title:"Azelaic Acid", desc:`${ap.azelaic} — thin layer.`, info: INFO.azelaic },
-        { id:"pm_moist", title:"Moisturize", desc:`${ap.moisturizerBarrier} (or ${ap.moisturizerLight} if you’re not dry).`, info: INFO.barrier }
-      );
-    } else {
-      items.push(
-        { id:"pm_recovery", title:"Recovery night", desc:`Moisturize only. Use ${ap.moisturizerBarrier} if dry/flaky; otherwise ${ap.moisturizerLight}.`, info: INFO.barrier }
-      );
-    }
-
-    return { nightType: nt, items };
-  }
-
-  // ---------------- UI: Tabs + animation ----------------
-  function renderTabs(active){
-    const tabsEl = $("tabs");
-    // Preserve the minimal toggle at the end
-    const toggleEl = tabsEl.querySelector(".toggle");
-    tabsEl.innerHTML = "";
-
-    TABS.forEach(t=>{
-      const b = document.createElement("button");
-      b.className = "tab" + (active===t.id ? " active" : "");
-      b.textContent = t.label;
-      b.onclick = ()=>showView(t.id);
-      tabsEl.appendChild(b);
+    // AM steps (always shown as part of "Today")
+    steps.push({
+      id:"am_cleanse",
+      emoji:"🌸",
+      title:"Cleanse",
+      detail: ap.cleanser,
+      why: WHY.cleanse
+    });
+    steps.push({
+      id:"am_vitc",
+      emoji:"🌼",
+      title:"Vitamin C",
+      detail: ap.vitaminC_HQ + " (Vitamin C part daily)",
+      why: WHY.vitaminC
     });
 
-    tabsEl.appendChild(toggleEl);
+    if(state.settings.hqPhase !== "phase3"){
+      if(hqDay === true){
+        steps.push({
+          id:"am_hq",
+          emoji:"✨",
+          title:"Brightening step (HQ day)",
+          detail:"Hydroquinone 4% (taper). Use only today if it’s one of your HQ mornings.",
+          why: WHY.hq
+        });
+      } else if(hqDay === false){
+        steps.push({
+          id:"am_az",
+          emoji:"🌿",
+          title:"Brightening step (Azelaic today)",
+          detail: ap.azelaic,
+          why: WHY.azelaic
+        });
+      } else {
+        // Not configured: show both with friendly guidance
+        steps.push({
+          id:"am_hq",
+          emoji:"✨",
+          title:"Brightening step (HQ taper)",
+          detail:"HQ on scheduled mornings (Phase: " + state.settings.hqPhase + ").",
+          why: WHY.hq
+        });
+        steps.push({
+          id:"am_az",
+          emoji:"🌿",
+          title:"Brightening step (Azelaic on non-HQ mornings)",
+          detail: ap.azelaic,
+          why: WHY.azelaic
+        });
+      }
+    } else {
+      steps.push({
+        id:"am_az",
+        emoji:"🌿",
+        title:"Azelaic (maintenance)",
+        detail: ap.azelaic,
+        why: WHY.azelaic
+      });
+    }
+
+    steps.push({
+      id:"am_hydrate",
+      emoji:"💧",
+      title:"Hydrate",
+      detail: ap.moisturizerLight,
+      why: WHY.hydrate
+    });
+
+    steps.push({
+      id:"am_spf",
+      emoji:"☀️",
+      title:"Sunscreen",
+      detail: ap.sunscreen + " (2 finger lengths)",
+      why: WHY.sunscreen
+    });
+
+    // PM steps (vary by rotation, but still shown on same screen)
+    if(nt === "Prep"){
+      steps.push({
+        id:"pm_cleanse",
+        emoji:"🌙",
+        title:"Evening cleanse",
+        detail: ap.cleanser,
+        why: WHY.cleanse
+      });
+      steps.push({
+        id:"pm_restore",
+        emoji:"💜",
+        title:"Moisturize (prep mode)",
+        detail: "Use " + ap.moisturizerLight + " (add barrier cream if dry). No tret until start date.",
+        why: WHY.barrier
+      });
+      return steps;
+    }
+
+    if(nt === "Renewal"){
+      steps.push({ id:"pm_cleanse", emoji:"🌙", title:"Evening cleanse", detail: ap.cleanser, why: WHY.cleanse });
+      steps.push({ id:"pm_wait", emoji:"⏳", title:"Let skin dry (20 min)", detail:"Optional timer available.", why: WHY.wait, timer: true });
+      steps.push({ id:"pm_tret", emoji:"🌟", title:"Renewal cream (tret)", detail: ap.tretinoin + " (pea size)", why: WHY.tret });
+      steps.push({ id:"pm_barrier", emoji:"🫶", title:"Barrier repair", detail: ap.moisturizerBarrier, why: WHY.barrier });
+    } else if(nt === "Calm+Clear"){
+      steps.push({ id:"pm_cleanse", emoji:"🌙", title:"Evening cleanse", detail: ap.cleanser, why: WHY.cleanse });
+      steps.push({ id:"pm_az", emoji:"🌿", title:"Calm + clear (azelaic)", detail: ap.azelaic, why: WHY.azelaic });
+      steps.push({ id:"pm_moist", emoji:"💜", title:"Moisturize", detail: ap.moisturizerBarrier + " (or gel if not dry)", why: WHY.barrier });
+    } else {
+      steps.push({ id:"pm_cleanse", emoji:"🌙", title:"Evening cleanse", detail: ap.cleanser, why: WHY.cleanse });
+      steps.push({ id:"pm_restore", emoji:"💜", title:"Restore night", detail: "Moisturize only (barrier cream if dry/flaky).", why: WHY.barrier });
+    }
+
+    return steps;
+  }
+
+  function labelAM(dateISO){
+    if(state.settings.hqPhase === "phase3") return "Azelaic day";
+    const hq = isHQDay(dateISO);
+    if(hq === true) return "HQ day";
+    if(hq === false) return "Azelaic day";
+    return "Taper guidance";
+  }
+
+  function labelPM(dateISO){
+    const nt = nightType(dateISO);
+    if(nt === "Prep") return "Prep mode";
+    if(nt === "Renewal") return "Renewal night (tret)";
+    if(nt === "Calm+Clear") return "Calm + clear night";
+    return "Restore night";
+  }
+
+  // ---------------- UI: Tabs ----------------
+  function renderTabs(active){
+    const el = $("tabs");
+    el.innerHTML = "";
+    TABS.forEach(t=>{
+      const b = document.createElement("button");
+      b.className = "tab" + (t.id === active ? " active" : "");
+      b.textContent = t.label;
+      b.onclick = ()=>showView(t.id);
+      el.appendChild(b);
+    });
   }
 
   function showView(id){
-    const views = ["today","plan","products","alternatives"];
-    views.forEach(v=>{
+    ["today","calendar","settings"].forEach(v=>{
       const el = document.querySelector("#view-"+v);
-      if(v===id){
+      if(v === id){
         el.style.display = "";
         requestAnimationFrame(()=>el.classList.add("active"));
       } else {
         el.classList.remove("active");
-        // Let animation finish before display none
         setTimeout(()=>{ el.style.display = "none"; }, 180);
       }
     });
     renderTabs(id);
   }
 
-  // ---------------- UI: Theme hinting (pastel differentiation already applied per section) ----------------
-  function renderStatus(dateISO){
-    const night = nightTypeFor(dateISO);
-    const row = $("statusRow");
-    row.innerHTML = "";
+  // ---------------- UI: Minimal mode ----------------
+  function applyMinimal(){
+    document.body.classList.toggle("minimal", !!state.settings.minimalMode);
+    const sw = $("minimalSwitch");
+    sw.classList.toggle("on", !!state.settings.minimalMode);
+    sw.setAttribute("aria-checked", state.settings.minimalMode ? "true":"false");
+  }
 
-    const pills = [
-      { label:"Date:", val: dateISO },
-      { label:"Tonight:", val: night },
-      { label:"HQ:", val: hqGuidance() }
-    ];
+  // ---------------- UI: Today render ----------------
+  function setBackgroundFor(dateISO){
+    const nt = nightType(dateISO);
+    // Night background if it's after start and it's a night with actives OR just always keep morning? We'll switch when PM is "Renewal/Calm/Restore"
+    const nightish = (nt !== "Prep"); // once started, use night gradient for a cozy feel
+    document.body.classList.toggle("nightBG", nightish);
+  }
 
-    // Optional explicit HQ day label if days selected
-    const hq = isHQDay(dateISO);
-    if(hq === true) pills.push({ label:"AM:", val:"HQ day" });
-    if(hq === false) pills.push({ label:"AM:", val:"Azelaic day" });
+  function renderHero(dateISO){
+    const h = $("hero");
+    const nt = nightType(dateISO);
 
-    pills.forEach(p=>{
+    const greeting = (new Date().getHours() < 15) ? "Good Morning" : "Good Evening";
+    const vibe =
+      nt === "Prep" ? "Prep mode until your start date 💛" :
+      nt === "Renewal" ? "Tonight is Renewal Night ✨" :
+      nt === "Calm+Clear" ? "Tonight is Calm + Clear 🌿" :
+      "Tonight is Restore + Repair 💜";
+
+    const start = state.settings.rotationStart;
+    const pre = isBeforeStart(dateISO);
+
+    h.innerHTML = `
+      <div class="heroTitle">${greeting} ✨</div>
+      <div class="heroSub">${vibe}</div>
+      <div class="row">
+        <div class="pill"><span class="pillDot"></span>Today: <strong>${dateISO}</strong></div>
+        <div class="pill"><span class="pillDot" style="background: var(--mint)"></span>Start date: <strong>${start}</strong></div>
+        ${pre ? `<div class="pill"><span class="pillDot" style="background: var(--sun)"></span>Prep mode</div>` : ``}
+      </div>
+    `;
+  }
+
+  function computeProgress(dateISO, steps){
+    const log = getLog(dateISO).steps;
+    const total = steps.length;
+    const done = steps.reduce((acc,s)=>acc + (log[s.id] ? 1 : 0), 0);
+    const pct = total ? Math.round((done/total)*100) : 0;
+    return { total, done, pct };
+  }
+
+  function toggleTip(id){
+    if(document.body.classList.contains("minimal")) return;
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.style.display = el.style.display === "block" ? "none" : "block";
+  }
+  window.toggleTip = toggleTip;
+
+  function renderSteps(dateISO){
+    const wrap = $("steps");
+    const steps = buildSteps(dateISO);
+    const log = getLog(dateISO).steps;
+
+    // Determine current step = first not done
+    let currentIndex = steps.findIndex(s => !log[s.id]);
+    if(currentIndex === -1) currentIndex = steps.length - 1;
+
+    wrap.innerHTML = "";
+
+    steps.forEach((s, idx)=>{
+      const tipId = `tip_${dateISO}_${s.id}`.replaceAll("-","_");
+
       const div = document.createElement("div");
-      div.className="pill";
-      div.innerHTML = `${p.label} <strong>${escapeHtml(p.val)}</strong>`;
-      row.appendChild(div);
-    });
+      div.className = "step" + (idx===currentIndex ? " current" : "") + (log[s.id] ? " done" : "");
+      div.innerHTML = `
+        <div class="stepTop">
+          <div>
+            <div class="row" style="gap:10px;">
+              <span class="chip emoji">${s.emoji} Step ${idx+1}</span>
+              <div class="stepLabel">${escapeHtml(s.title)}</div>
+            </div>
+            <div class="stepDesc">${escapeHtml(s.detail)}</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div class="infoBtn" onclick="toggleTip('${tipId}')" title="What does this do?">?</div>
+            <button class="btnGhost" style="padding:8px 10px; border-radius:12px; box-shadow:none;"
+              onclick="toggleStep('${dateISO}','${s.id}')">${log[s.id] ? "Undo" : "Done"}</button>
+          </div>
+        </div>
 
-    // Pre-start banner
-    const pre = $("preStartBanner");
-    if(isBeforeStart(dateISO)){
-      pre.innerHTML = `
-        <div class="banner">
-          <strong>Prep mode:</strong> Your protocol starts <strong>${escapeHtml(state.settings.rotationStart)}</strong>.
-          Until then: keep mornings consistent (Vitamin C + sunscreen) and nights gentle (moisturize only).
+        <div class="tip" id="${tipId}">
+          <strong>Why:</strong> ${escapeHtml(s.why || "")}
+          ${s.timer ? `<div style="margin-top:8px;"><button class="btnPrimary" style="padding:8px 10px; border-radius:12px; box-shadow:none;" onclick="startTimer(20)">Start 20-min timer</button> <span class="muted" id="timerLabel"></span></div>` : ``}
         </div>
       `;
+      wrap.appendChild(div);
+    });
+
+    // Chips for AM/PM types + progress ring
+    $("amTypeChip").textContent = `AM: ${labelAM(dateISO)}`;
+    $("pmTypeChip").textContent = `PM: ${labelPM(dateISO)}`;
+
+    const prog = computeProgress(dateISO, steps);
+    $("ring").style.setProperty("--p", prog.pct + "%");
+    $("ringPct").textContent = prog.pct + "%";
+
+    // Pre-start banner text
+    const pre = $("preStartBanner");
+    if(isBeforeStart(dateISO)){
+      pre.textContent = `Prep mode: your protocol starts on ${state.settings.rotationStart}. Until then, keep it gentle at night (moisturize only) and be consistent with SPF in the morning.`;
     } else {
-      pre.innerHTML = "";
+      pre.textContent = "";
+    }
+
+    return { steps, currentIndex, prog };
+  }
+
+  function escapeHtml(str){
+    return (str||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  window.toggleStep = function(dateISO, stepId){
+    const log = getLog(dateISO).steps;
+    log[stepId] = !log[stepId];
+    saveState();
+    renderToday();
+  };
+
+  function renderToday(){
+    const dateISO = todayISO();
+    setBackgroundFor(dateISO);
+    renderHero(dateISO);
+    const { steps } = renderSteps(dateISO);
+
+    // Notes
+    $("notes").value = getLog(dateISO).notes || "";
+
+    // update chips in hero card (AM/PM chip labels already set)
+    $("dateChip").textContent = "📅 " + dateISO;
+
+    // If fully complete, show gentle message in hint
+    const prog = computeProgress(dateISO, steps);
+    $("todayHint").textContent = prog.pct === 100 ? "Ritual complete ✨✨✨" : "Tap “Next step” to flow through steps (like a mini ritual).";
+  }
+
+  // Guided flow: Next step
+  function nextStep(){
+    const dateISO = todayISO();
+    const steps = buildSteps(dateISO);
+    const log = getLog(dateISO).steps;
+    const idx = steps.findIndex(s => !log[s.id]);
+    if(idx === -1){
+      // already done
+      return;
+    }
+    log[steps[idx].id] = true;
+    saveState();
+    renderToday();
+
+    // Light feedback animation: scroll current step into view
+    const wrap = $("steps");
+    const el = wrap.children[Math.min(idx+1, wrap.children.length-1)];
+    if(el && el.scrollIntoView) el.scrollIntoView({ behavior:"smooth", block:"center" });
+  }
+
+  function markAll(){
+    const dateISO = todayISO();
+    const steps = buildSteps(dateISO);
+    const log = getLog(dateISO).steps;
+    steps.forEach(s=> log[s.id] = true);
+    saveState();
+    renderToday();
+  }
+
+  function clearToday(){
+    const dateISO = todayISO();
+    const keepNotes = getLog(dateISO).notes || "";
+    state.logs[dateISO] = { steps:{}, notes: keepNotes };
+    saveState();
+    renderToday();
+  }
+
+  // Simple 20-min timer (in-app label)
+  let timerInt = null;
+  function startTimer(mins){
+    const total = mins * 60;
+    let left = total;
+    const label = document.getElementById("timerLabel");
+    if(timerInt) clearInterval(timerInt);
+
+    const fmt = (s)=>{
+      const m = Math.floor(s/60);
+      const r = s%60;
+      return `${m}:${String(r).padStart(2,"0")}`;
+    };
+    if(label) label.textContent = ` (${fmt(left)})`;
+
+    timerInt = setInterval(()=>{
+      left--;
+      if(label) label.textContent = ` (${fmt(Math.max(left,0))})`;
+      if(left <= 0){
+        clearInterval(timerInt);
+        timerInt = null;
+        if(label) label.textContent = " (done ✨)";
+        // gentle notification alternative: just update text (no permissions)
+      }
+    }, 1000);
+  }
+  window.startTimer = startTimer;
+
+  // ---------------- Calendar ----------------
+  const DOW = ["S","M","T","W","T","F","S"];
+  let calMonth = null; // Date object at first of month
+
+  function monthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+
+  function renderCalendar(){
+    const now = new Date();
+    if(!calMonth) calMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    const title = calMonth.toLocaleString(undefined, { month:"long", year:"numeric" });
+    $("calTitle").textContent = title;
+
+    const grid = $("calGrid");
+    grid.innerHTML = "";
+
+    // DOW header
+    DOW.forEach(x=>{
+      const d = document.createElement("div");
+      d.className = "dow";
+      d.textContent = x;
+      grid.appendChild(d);
+    });
+
+    const firstDay = new Date(calMonth.getFullYear(), calMonth.getMonth(), 1);
+    const startDow = firstDay.getDay();
+    const daysInMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 0).getDate();
+
+    // blanks
+    for(let i=0;i<startDow;i++){
+      const blank = document.createElement("div");
+      blank.style.opacity = "0";
+      grid.appendChild(blank);
+    }
+
+    for(let day=1; day<=daysInMonth; day++){
+      const d = new Date(calMonth.getFullYear(), calMonth.getMonth(), day);
+      const iso = new Date(d.getFullYear(), d.getMonth(), d.getDate()).toISOString().slice(0,10);
+      const log = state.logs[iso]?.steps || {};
+      const steps = buildSteps(iso);
+      const prog = computeProgress(iso, steps);
+
+      // heuristics: AM done if first ~AM steps done (we'll check key AM ids)
+      const amDone = !!(log["am_cleanse"] && log["am_spf"]); // practical
+      const pmDone = !!(log["pm_cleanse"] && (log["pm_barrier"] || log["pm_restore"] || log["pm_moist"] || log["pm_tret"] || log["pm_az"]));
+      const isTret = (nightType(iso) === "Renewal") && !isBeforeStart(iso);
+      const full = (prog.pct === 100);
+
+      const cell = document.createElement("div");
+      cell.className = "day";
+      cell.innerHTML = `
+        <div class="dayNum">${day}</div>
+        <div class="dots">
+          ${amDone ? `<span class="dot am" title="AM done"></span>` : ``}
+          ${pmDone ? `<span class="dot pm" title="PM done"></span>` : ``}
+          ${isTret ? `<span class="dot tret" title="Tret night"></span>` : ``}
+          ${full ? `<span class="dot full" title="Full day"></span>` : ``}
+        </div>
+      `;
+      cell.onclick = ()=>{
+        const msg = [];
+        msg.push(`Date: ${iso}`);
+        msg.push(`AM: ${amDone ? "Done 🟡" : "—"}`);
+        msg.push(`PM: ${pmDone ? "Done 🔵" : "—"}`);
+        msg.push(`Night: ${labelPM(iso)}${isTret ? " 🟣" : ""}`);
+        msg.push(`Progress: ${prog.pct}%`);
+        alert(msg.join("\n"));
+      };
+
+      grid.appendChild(cell);
     }
   }
 
-  // ---------------- Rendering: Checklist with “?” icons ----------------
-  function renderChecklist(container, headerTitle, items, slot, dateISO, sectionType /* day/night */){
-    const log = getLog(dateISO);
-    const checked = log[slot] || {};
+  // ---------------- Settings: HQ day picker ----------------
+  const DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 
-    const header = document.createElement("div");
-    header.className = "sectionHeader";
-    header.innerHTML = `<div>${escapeHtml(headerTitle)}</div><div class="small">${slot.toUpperCase()}</div>`;
-
-    const body = document.createElement("div");
-    body.className = "sectionBody";
-
-    items.forEach((it, idx)=>{
-      const wrap = document.createElement("div");
-      wrap.className = "item";
-      if(idx === 0) wrap.style.borderTop = "none";
-
-      const cb = document.createElement("input");
-      cb.type="checkbox";
-      cb.checked = !!checked[it.id];
-      cb.onchange = ()=>setCheck(dateISO, slot, it.id, cb.checked);
-
-      const lab = document.createElement("div");
-      lab.className="label";
-
-      const infoId = `${slot}_${it.id}_info`;
-
-      lab.innerHTML = `
-        <div class="tline">
-          <div class="t">${escapeHtml(it.title)}</div>
-          <div class="info" role="button" aria-label="What does this do?" onclick="toggleInfo('${escapeJs(infoId)}')">?</div>
-        </div>
-        <div class="d">${escapeHtml(it.desc)}</div>
-        <div id="${escapeHtml(infoId)}" class="tooltip">${escapeHtml(it.info || "")}</div>
-      `;
-
-      wrap.appendChild(cb);
-      wrap.appendChild(lab);
-      body.appendChild(wrap);
-    });
-
-    container.innerHTML = "";
-    container.className = `section ${sectionType}`;
-    container.appendChild(header);
-    container.appendChild(body);
-  }
-
-  window.toggleInfo = function(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    // Minimal mode hides tooltips entirely
-    if(document.body.classList.contains("minimal")) return;
-
-    el.style.display = (el.style.display === "block") ? "none" : "block";
-  };
-
-  // ---------------- Summary + Progress ----------------
-  function calcProgress(dateISO){
-    const log = getLog(dateISO);
-    const amItems = amChecklist(dateISO);
-    const pm = pmChecklist(dateISO);
-    const pmItems = pm.items;
-
-    const total = amItems.length + pmItems.length;
-    let done = 0;
-
-    amItems.forEach(i=>{ if(log.am[i.id]) done++; });
-    pmItems.forEach(i=>{ if(log.pm[i.id]) done++; });
-
-    const pct = total ? Math.round((done/total)*100) : 0;
-    return { pct, done, total, amItems, pmItems };
-  }
-
-  function renderSummary(dateISO){
-    const chips = $("summaryChips");
-    chips.innerHTML = "";
-
-    const night = nightTypeFor(dateISO);
-    const hq = isHQDay(dateISO);
-
-    const chipData = [
-      { label:"AM", val: hq===true ? "HQ day" : (hq===false ? "Azelaic day" : "Taper guidance") },
-      { label:"PM", val: night },
-      { label:"Start", val: state.settings.rotationStart }
-    ];
-
-    chipData.forEach(c=>{
-      const div = document.createElement("div");
-      div.className = "chip";
-      div.innerHTML = `${escapeHtml(c.label)}: <strong>${escapeHtml(c.val)}</strong>`;
-      chips.appendChild(div);
-    });
-
-    const { pct } = calcProgress(dateISO);
-    $("progressLabel").textContent = `Progress: ${pct}%`;
-    $("progressFill").style.width = `${pct}%`;
-  }
-
-  // ---------------- Plan: HQ day picker ----------------
-  const DAY_LABELS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
-  function renderHQPicker(){
-    const wrap = $("hqDayPicker");
+  function renderHQDays(){
+    const wrap = $("hqDays");
     wrap.innerHTML = "";
-
     const selected = new Set(state.settings.hqDays || []);
-    DAY_LABELS.forEach((d, idx)=>{
-      const btn = document.createElement("button");
-      btn.type="button";
-      btn.className = "chip";
-      btn.style.cursor = "pointer";
-      btn.innerHTML = `${d} ${selected.has(idx) ? "✓" : ""}`;
-      btn.onclick = ()=>{
+    DAY_NAMES.forEach((n, idx)=>{
+      const b = document.createElement("button");
+      b.type="button";
+      b.className = "dayBtn" + (selected.has(idx) ? " on" : "");
+      b.textContent = selected.has(idx) ? `${n} ✓` : n;
+      b.onclick = ()=>{
         const s = new Set(state.settings.hqDays || []);
         if(s.has(idx)) s.delete(idx); else s.add(idx);
         state.settings.hqDays = Array.from(s).sort((a,b)=>a-b);
         saveState();
-        render();
+        renderHQDays();
+        renderHQHint();
+        renderToday();
       };
-      wrap.appendChild(btn);
+      wrap.appendChild(b);
     });
-
-    const phase = state.settings.hqPhase;
-    const needed = (phase==="phase1") ? 3 : (phase==="phase2") ? 2 : 0;
-    const count = (state.settings.hqDays || []).length;
-
-    let hint = "";
-    if(needed === 0) hint = "HQ is off in Phase 3. Day selection doesn’t matter.";
-    else hint = `Selected ${count} day(s). Recommended: select exactly ${needed} for this phase.`;
-
-    $("hqDaysHint").textContent = hint;
+    renderHQHint();
   }
 
-  // ---------------- Products + Replacements ----------------
-  function renderProducts(){
-    const c = $("productCabinet");
-    const ap = state.activeProducts;
+  function renderHQHint(){
+    const needed = hqNeededCount();
+    const count = (state.settings.hqDays || []).length;
+    let msg = "";
+    if(needed === 0){
+      msg = "HQ is off in Phase 3. (Day selection doesn’t matter.)";
+    } else if(count === 0){
+      msg = `Tip: pick ${needed} days for HQ so Today can label HQ vs Azelaic mornings.`;
+    } else {
+      msg = `Selected ${count} day(s). Recommended: select exactly ${needed} for this phase.`;
+    }
+    $("hqHint").textContent = msg;
+  }
 
-    c.innerHTML = `
-      <h2>Product cabinet (active picks)</h2>
-      <div class="muted">Use “Replacements” to swap products. Your Today checklists update automatically.</div>
-      <div class="hr"></div>
-      <div class="list">
-        ${Object.entries(ap).map(([k,v])=>`
-          <div class="alt">
-            <div class="top">
-              <div>
-                <div class="name">${escapeHtml(prettyKey(k))}</div>
-                <div class="desc">${escapeHtml(v)}</div>
+  // ---------------- Settings: products + swapping ----------------
+  function renderProducts(){
+    const wrap = $("products");
+    wrap.innerHTML = "";
+
+    const sections = [
+      { key:"cleanser", title:"Cleanser 🫧" },
+      { key:"vitaminC_HQ", title:"Vitamin C + HQ (AM serum) 🍊" , locked:true },
+      { key:"azelaic", title:"Azelaic 🌿" },
+      { key:"tretinoin", title:"Renewal cream (tret) 🌟" },
+      { key:"moisturizerLight", title:"Hydration gel 💧" },
+      { key:"moisturizerBarrier", title:"Barrier repair 💜" },
+      { key:"sunscreen", title:"Sunscreen ☀️" }
+    ];
+
+    sections.forEach(sec=>{
+      const current = state.activeProducts[sec.key] || "";
+      const card = document.createElement("div");
+      card.className = "prodCard";
+
+      const topBadges = `
+        <span class="badge active">Active</span>
+        ${sec.locked ? `<span class="badge value">Locked</span>` : ``}
+      `;
+
+      card.innerHTML = `
+        <div class="prodTop">
+          <div style="min-width:0;">
+            <div class="prodName">${escapeHtml(sec.title)}</div>
+            <div class="prodVal">${escapeHtml(current)}</div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+            ${topBadges}
+            ${sec.locked ? "" : `<button class="btnGhost" style="padding:8px 10px; border-radius:12px; box-shadow:none;" data-swap="${sec.key}">Swap</button>`}
+          </div>
+        </div>
+        <div class="tip" id="swap_${sec.key}" style="display:none;"></div>
+      `;
+      wrap.appendChild(card);
+
+      if(!sec.locked){
+        const btn = card.querySelector(`[data-swap="${sec.key}"]`);
+        btn.onclick = ()=>{
+          const tip = card.querySelector(`#swap_${sec.key}`);
+          const show = tip.style.display !== "block";
+          tip.style.display = show ? "block" : "none";
+          if(show){
+            tip.innerHTML = renderSwapList(sec.key);
+          }
+        };
+      }
+    });
+  }
+
+  function renderSwapList(key){
+    const list = ALT[key];
+    if(!list) return `<div class="muted">No alternatives configured.</div>`;
+
+    return `
+      <div class="muted" style="margin-bottom:8px;">Pick a replacement (value = cost/benefit).</div>
+      ${list.map(item=>{
+        const active = state.activeProducts[key] === item.name;
+        return `
+          <div class="prodCard" style="margin-top:8px; background: rgba(255,255,255,.70); box-shadow:none;">
+            <div class="prodTop">
+              <div style="min-width:0;">
+                <div class="prodName">${escapeHtml(item.name)}</div>
+                <div class="prodVal">${escapeHtml(item.note)}</div>
+                <div class="row" style="margin-top:8px;">
+                  ${item.primary ? `<span class="badge primary">Primary</span>` : `<span class="badge">Alt</span>`}
+                  <span class="badge value">${escapeHtml(item.tier)} • Value: ${escapeHtml(item.value)}</span>
+                  ${active ? `<span class="badge active">Active</span>` : ``}
+                </div>
               </div>
-              <div class="meta">
-                <span class="tag">${escapeHtml(k.includes("moisturizerBarrier") ? "$$$" : "$$/$")}</span>
+              <div>
+                ${active ? `<button class="btnGhost" style="padding:8px 10px; border-radius:12px; box-shadow:none; opacity:.6;" disabled>Active</button>`
+                         : `<button class="btnPrimary" style="padding:8px 10px; border-radius:12px; box-shadow:none;" onclick="swapNow('${key}','${escapeHtml(item.name).replaceAll("'", "&#39;")}')">Use</button>`}
               </div>
             </div>
           </div>
-        `).join("")}
-      </div>
-      <div class="hr"></div>
-      <div class="muted">
-        <strong>Moisturizer note:</strong> Seacra Marine Algae is a great hydration layer, but many people need a barrier cream once tret frequency increases.
-      </div>
+        `;
+      }).join("")}
     `;
   }
 
-  function isActive(catKey, name){
-    const map = {
-      cleanser: "cleanser",
-      azelaic: "azelaic",
-      tretinoin: "tretinoin",
-      moisturizerBarrier: "moisturizerBarrier",
-      moisturizerLight: "moisturizerLight",
-      sunscreen: "sunscreen"
-    };
-    const k = map[catKey];
-    return k ? state.activeProducts[k] === name : false;
-  }
-
-  window.swapProduct = function(catKey, name){
-    const map = {
-      cleanser: "cleanser",
-      azelaic: "azelaic",
-      tretinoin: "tretinoin",
-      moisturizerBarrier: "moisturizerBarrier",
-      moisturizerLight: "moisturizerLight",
-      sunscreen: "sunscreen"
-    };
-    const k = map[catKey];
-    if(!k) return;
-    state.activeProducts[k] = name;
+  window.swapNow = function(key, name){
+    // unescape basic html entity if any
+    const decoded = name.replaceAll("&#39;","'");
+    state.activeProducts[key] = decoded;
     saveState();
-    render();
-    showView("products");
+    renderProducts();
+    renderToday();
   };
 
-  function renderAltCard(catKey, obj, isPrimary){
-    const active = isActive(catKey, obj.name);
-    const primaryTag = isPrimary ? `<span class="tag good">Primary</span>` : `<span class="tag">Alt</span>`;
-    const activeTag = active ? `<span class="tag good">Active</span>` : "";
-    const valueClass = (obj.value||"").includes("Very") ? "good" : "warn";
+  // ---------------- Events ----------------
+  function wire(){
+    // minimal toggle
+    $("minimalSwitch").onclick = ()=>{
+      state.settings.minimalMode = !state.settings.minimalMode;
+      saveState();
+      applyMinimal();
+    };
 
-    const btn = active
-      ? `<button disabled style="opacity:.55;cursor:not-allowed;">Active</button>`
-      : `<button class="primary" onclick="swapProduct('${escapeJs(catKey)}','${escapeJs(obj.name)}')">Swap</button>`;
+    // today actions
+    $("btnNext").onclick = nextStep;
+    $("btnMarkAll").onclick = markAll;
+    $("btnClearToday").onclick = clearToday;
 
-    return `
-      <div class="alt">
-        <div class="top">
-          <div>
-            <div class="name">${escapeHtml(obj.name)}</div>
-            <div class="desc">${escapeHtml(obj.note || "")}</div>
-          </div>
-          <div class="meta">
-            ${primaryTag}
-            ${activeTag}
-            <span class="tag">${escapeHtml(obj.tier || "$")}</span>
-            <span class="tag ${valueClass}">Value: ${escapeHtml(obj.value || "—")}</span>
-            ${btn}
-          </div>
-        </div>
-      </div>
-    `;
-  }
+    $("btnSaveNotes").onclick = ()=>{
+      const iso = todayISO();
+      getLog(iso).notes = $("notes").value || "";
+      saveState();
+      renderToday();
+    };
+    $("btnClearNotes").onclick = ()=>{
+      const iso = todayISO();
+      getLog(iso).notes = "";
+      saveState();
+      renderToday();
+    };
 
-  function renderAlternatives(){
-    const c = $("alternatives");
-    c.innerHTML = `
-      <h2>Replacements (cost/benefit)</h2>
-      <div class="muted">Swap options anytime. “Value” is practical cost/benefit (not medical advice). Rx coverage varies.</div>
-      <div class="hr"></div>
-    `;
+    // calendar nav
+    $("calPrev").onclick = ()=>{
+      calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()-1, 1);
+      renderCalendar();
+    };
+    $("calNext").onclick = ()=>{
+      calMonth = new Date(calMonth.getFullYear(), calMonth.getMonth()+1, 1);
+      renderCalendar();
+    };
+    $("calToday").onclick = ()=>{
+      const now = new Date();
+      calMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      renderCalendar();
+    };
 
-    Object.keys(PRODUCT_LIBRARY).forEach(cat=>{
-      const block = document.createElement("div");
-      block.innerHTML = `
-        <h3>${escapeHtml(prettyKey(cat))}</h3>
-        <div class="list">
-          ${renderAltCard(cat, PRODUCT_LIBRARY[cat].primary, true)}
-          ${(PRODUCT_LIBRARY[cat].alts || []).map(a=>renderAltCard(cat, a, false)).join("")}
-        </div>
-        <div class="hr"></div>
-      `;
-      c.appendChild(block);
-    });
-  }
-
-  // ---------------- Minimal mode ----------------
-  function applyMinimalMode(){
-    const on = !!state.settings.minimalMode;
-    document.body.classList.toggle("minimal", on);
-    const sw = $("minimalSwitch");
-    sw.classList.toggle("on", on);
-    sw.setAttribute("aria-checked", on ? "true" : "false");
-  }
-
-  function toggleMinimal(){
-    state.settings.minimalMode = !state.settings.minimalMode;
-    saveState();
-    applyMinimalMode();
-  }
-
-  // ---------------- Wire events ----------------
-  function wireEvents(dateISO){
-    $("minimalSwitch").onclick = toggleMinimal;
-
-    $("saveNotes").onclick = ()=> setNotes(dateISO, $("notes").value || "");
-    $("clearNotes").onclick = ()=> setNotes(dateISO, "");
-
-    $("saveSettings").onclick = ()=>{
+    // settings
+    $("btnSaveSettings").onclick = ()=>{
       state.settings.rotationStart = $("startDate").value || todayISO();
       state.settings.hqPhase = $("hqPhase").value || "phase1";
-
-      // Optional: enforce day count gently (do not block)
       saveState();
-      render();
-      showView("today");
+      renderHQDays();
+      renderToday();
+      alert("Saved ✨");
     };
 
-    $("resetAll").onclick = ()=>{
+    $("btnReset").onclick = ()=>{
       if(confirm("Reset all saved routine data on this device?")){
-        localStorage.removeItem("dermRoutineState");
+        localStorage.removeItem("routine_state_v2");
         state = structuredClone(DEFAULT);
         saveState();
-        render();
-        showView("today");
+        applyMinimal();
+        renderAll();
+        alert("Reset done.");
       }
     };
-
-    $("markAM").onclick = ()=>{
-      const log = getLog(dateISO);
-      amChecklist(dateISO).forEach(i=>{ log.am[i.id] = true; });
-      saveState();
-      render();
-    };
-
-    $("markPM").onclick = ()=>{
-      const log = getLog(dateISO);
-      pmChecklist(dateISO).items.forEach(i=>{ log.pm[i.id] = true; });
-      saveState();
-      render();
-    };
-
-    $("clearToday").onclick = ()=>{
-      state.logs[dateISO] = { am:{}, pm:{}, notes: (getLog(dateISO).notes || "") };
-      saveState();
-      render();
-    };
   }
 
-  // ---------------- Render ----------------
-  function renderPlan(){
+  // ---------------- Render all ----------------
+  function renderSettings(){
     $("startDate").value = state.settings.rotationStart;
     $("hqPhase").value = state.settings.hqPhase;
-    renderHQPicker();
-  }
-
-  function renderToday(dateISO){
-    renderStatus(dateISO);
-    renderSummary(dateISO);
-
-    // AM section
-    renderChecklist(
-      $("amSection"),
-      "Morning (AM)",
-      amChecklist(dateISO),
-      "am",
-      dateISO,
-      "day"
-    );
-
-    // PM section
-    const pm = pmChecklist(dateISO);
-    renderChecklist(
-      $("pmSection"),
-      `Night (PM) • ${pm.nightType}`,
-      pm.items,
-      "pm",
-      dateISO,
-      "night"
-    );
-
-    // Notes
-    $("notes").value = getLog(dateISO).notes || "";
-  }
-
-  function render(){
-    applyMinimalMode();
-
-    const dateISO = todayISO();
-    renderToday(dateISO);
-    renderPlan();
+    renderHQDays();
     renderProducts();
-    renderAlternatives();
-    wireEvents(dateISO);
-
-    // Update progress after all checks
-    const { pct } = calcProgress(dateISO);
-    $("progressLabel").textContent = `Progress: ${pct}%`;
-    $("progressFill").style.width = `${pct}%`;
   }
 
-  // Register service worker (offline)
+  function renderAll(){
+    applyMinimal();
+    renderToday();
+    renderCalendar();
+    renderSettings();
+  }
+
+  // Service worker (offline)
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
   }
@@ -1162,7 +1450,8 @@
   // Init
   renderTabs("today");
   showView("today");
-  render();
+  renderAll();
+  wire();
 </script>
 </body>
 </html>
