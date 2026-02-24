@@ -650,6 +650,10 @@
 </main>
 
 <script>
+  function deepClone(obj){
+  return JSON.parse(JSON.stringify(obj));
+}
+
   // ---------------- State ----------------
   const DEFAULT = {
     settings: {
@@ -728,9 +732,9 @@
   function loadState(){
     try{
       const raw = localStorage.getItem("routine_state_v2");
-      return raw ? JSON.parse(raw) : structuredClone(DEFAULT);
+      return raw ? JSON.parse(raw) : deepClone(DEFAULT);
     } catch {
-      return structuredClone(DEFAULT);
+      return deepClone(DEFAULT);
     }
   }
   function saveState(){
@@ -1418,7 +1422,7 @@
     $("btnReset").onclick = ()=>{
       if(confirm("Reset all saved routine data on this device?")){
         localStorage.removeItem("routine_state_v2");
-        state = structuredClone(DEFAULT);
+        state = deepClone(DEFAULT);
         saveState();
         applyMinimal();
         renderAll();
